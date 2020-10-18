@@ -1,0 +1,1 @@
+This is for all of our shared SQL Queries, any creates and insert statements created should be put in here for easy sharing!
