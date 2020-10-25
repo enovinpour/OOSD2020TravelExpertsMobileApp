@@ -1,0 +1,471 @@
+Index: app/src/main/res/values/styles.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <!-- Base application theme. -->\r\n    <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.DarkActionBar\">\r\n        <!-- Customize your theme here. -->\r\n        <item name=\"colorPrimary\">@color/colorPrimary</item>\r\n        <item name=\"colorPrimaryDark\">@color/colorPrimaryDark</item>\r\n        <item name=\"colorAccent\">@color/colorAccent</item>\r\n    </style>\r\n\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/styles.xml	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
++++ app/src/main/res/values/styles.xml	(date 1603660643078)
+@@ -2,9 +2,8 @@
+     <!-- Base application theme. -->
+     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+         <!-- Customize your theme here. -->
+-        <item name="colorPrimary">@color/colorPrimary</item>
+-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+-        <item name="colorAccent">@color/colorAccent</item>
++        <item name="colorPrimary">#a4c2f4</item>
++        <item name="colorPrimaryDark">#354257</item>
++        <item name="colorAccent">#5fc0de</item>
+     </style>
+-
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/Model/Customer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Model;\r\n\r\npublic class Customer {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/Model/Customer.java	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
++++ app/src/main/java/Model/Customer.java	(date 1603654618503)
+@@ -1,4 +1,19 @@
+ package Model;
+ 
+ public class Customer {
++
++    private int custId;
++    private String custFirstName;
++    private String custLastName;
++    private String custAddress;
++    private String custCity;
++    private String custProv;
++    private String custPostal;
++    private String custCountry;
++    private String custHomePhone;
++    private String custBusPhone;
++    private String custEmail;
++    private int points;
++    private String password;
++
+ }
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/MainActivity.java	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/MainActivity.java	(date 1603660692436)
+@@ -3,12 +3,23 @@
+ import androidx.appcompat.app.AppCompatActivity;
+ 
+ import android.os.Bundle;
++import android.view.View;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.ImageView;
+ 
+ public class MainActivity extends AppCompatActivity {
++    EditText txt_email, txt_password;
++    ImageView img_login;
++    Button btn_submit;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_main);
++        setContentView(R.layout.activity_login);
++        View view;
++        img_login = findViewById(R.id.img_login);
++
++        img_login.setImageResource(R.drawable.icon_sleepyowl);
+     }
+ }
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/compiler.xml	(date 1603654257086)
++++ .idea/compiler.xml	(date 1603654257086)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <bytecodeTargetLevel target="1.8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_login.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_login.xml	(date 1603658043313)
++++ app/src/main/res/layout/activity_login.xml	(date 1603658043313)
+@@ -0,0 +1,122 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <TextView
++        android:id="@+id/txt_forgotpasswordQ"
++        android:layout_width="251dp"
++        android:layout_height="21dp"
++        android:layout_marginTop="20dp"
++        android:layout_marginBottom="8dp"
++        android:text="Forgot your password? Reset Password"
++        android:textAlignment="center"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.528"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/txt_registerQ"
++        app:layout_constraintVertical_bias="0.004" />
++
++    <Button
++        android:id="@+id/btn_login"
++        android:layout_width="256dp"
++        android:layout_height="41dp"
++        android:layout_marginTop="88dp"
++        android:letterSpacing=".5"
++        android:text="Submit"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.517"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/txt_password" />
++
++    <TextView
++        android:id="@+id/txt_registerQ"
++        android:layout_width="251dp"
++        android:layout_height="21dp"
++        android:layout_marginTop="20dp"
++        android:text="don't have an account? Register here"
++        android:textAlignment="center"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.528"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
++
++    <TextView
++        android:id="@+id/lbl_register"
++        android:layout_width="144dp"
++        android:layout_height="38dp"
++        android:layout_marginTop="88dp"
++        android:letterSpacing=".2"
++        android:text="Login"
++        android:textAlignment="center"
++        android:textSize="24sp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
++
++    <EditText
++        android:id="@+id/txt_email"
++        android:layout_width="254dp"
++        android:layout_height="38dp"
++        android:layout_marginTop="272dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.486"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
++
++    <TextView
++        android:id="@+id/lbl_email"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="8dp"
++        android:text="Email"
++        android:textSize="18sp"
++        app:layout_constraintBottom_toTopOf="@+id/txt_email"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.259"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/img_login" />
++
++    <EditText
++        android:id="@+id/txt_password"
++        android:layout_width="253dp"
++        android:layout_height="38dp"
++        android:layout_marginTop="60dp"
++        android:ems="10"
++        android:inputType="textPassword"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.488"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
++
++    <TextView
++        android:id="@+id/lbl_password"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="8dp"
++        android:text="Password"
++        android:textSize="18sp"
++        app:layout_constraintBottom_toTopOf="@+id/txt_password"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.277"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/txt_email"
++        app:layout_constraintVertical_bias="0.932" />
++
++    <ImageView
++        android:id="@+id/img_login"
++        android:layout_width="183dp"
++        android:layout_height="170dp"
++        android:layout_marginTop="48dp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.501"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_register"
++        tools:srcCompat="@drawable/icon_sleepyowl" />
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
++++ .idea/misc.xml	(date 1603654257079)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
++++ .idea/gradle.xml	(date 1603654257098)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: app/src/main/res/layout/activity_register.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_register.xml	(date 1603657686508)
++++ app/src/main/res/layout/activity_register.xml	(date 1603657686508)
+@@ -0,0 +1,156 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <EditText
++        android:id="@+id/txt_password"
++        android:layout_width="350dp"
++        android:layout_height="52dp"
++        android:ems="10"
++        android:inputType="textPassword"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_password" />
++
++    <TextView
++        android:id="@+id/lbl_email"
++        android:layout_width="61dp"
++        android:layout_height="21dp"
++        android:layout_marginTop="40dp"
++        android:text="Email"
++        android:textSize="18sp"
++        app:layout_constraintStart_toStartOf="@+id/txt_email"
++        app:layout_constraintTop_toBottomOf="@+id/txt_custphone" />
++
++    <TextView
++        android:id="@+id/lbl_phonenumber"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="40dp"
++        android:text="Phone Number"
++        android:textSize="18sp"
++        app:layout_constraintStart_toStartOf="@+id/txt_custphone"
++        app:layout_constraintTop_toBottomOf="@+id/txt_lastName" />
++
++    <TextView
++        android:id="@+id/lbl_lastname"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="40dp"
++        android:text="Last Name"
++        android:textSize="18sp"
++        app:layout_constraintStart_toStartOf="@+id/txt_lastName"
++        app:layout_constraintTop_toBottomOf="@+id/txt_firstName" />
++
++    <TextView
++        android:id="@+id/lbl_firstname"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="50dp"
++        android:text="First Name"
++        android:textSize="18sp"
++        app:layout_constraintStart_toStartOf="@+id/txt_firstName"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
++
++    <TextView
++        android:id="@+id/lbl_initial"
++        android:layout_width="56dp"
++        android:layout_height="23dp"
++        android:layout_marginTop="50dp"
++        android:text="Initial"
++        android:textAlignment="center"
++        android:textSize="18sp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.742"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
++
++    <Button
++        android:id="@+id/btn_login"
++        android:layout_width="264dp"
++        android:layout_height="43dp"
++        android:layout_marginTop="30dp"
++        android:letterSpacing=".5"
++        android:text="Submit"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/txt_password"
++        app:layout_constraintVertical_bias="0.181" />
++
++    <TextView
++        android:id="@+id/lbl_register"
++        android:layout_width="144dp"
++        android:layout_height="38dp"
++        android:layout_marginTop="88dp"
++        android:letterSpacing=".2"
++        android:text="Register"
++        android:textAlignment="center"
++        android:textSize="24sp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.498"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
++
++    <EditText
++        android:id="@+id/txt_email"
++        android:layout_width="350dp"
++        android:layout_height="58dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintStart_toStartOf="@+id/lbl_password"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_email" />
++
++    <TextView
++        android:id="@+id/lbl_password"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="40dp"
++        android:text="Password"
++        android:textSize="18sp"
++        app:layout_constraintStart_toStartOf="@+id/txt_password"
++        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
++
++    <EditText
++        android:id="@+id/txt_firstName"
++        android:layout_width="225dp"
++        android:layout_height="41dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintBaseline_toBaselineOf="@+id/txt_initial"
++        app:layout_constraintStart_toStartOf="@+id/lbl_lastname" />
++
++    <EditText
++        android:id="@+id/txt_lastName"
++        android:layout_width="353dp"
++        android:layout_height="48dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintStart_toStartOf="@+id/lbl_phonenumber"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_lastname" />
++
++    <EditText
++        android:id="@+id/txt_initial"
++        android:layout_width="56dp"
++        android:layout_height="43dp"
++        android:layout_marginTop="4dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.742"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_initial" />
++
++    <EditText
++        android:id="@+id/txt_custphone"
++        android:layout_width="348dp"
++        android:layout_height="49dp"
++        android:ems="10"
++        android:inputType="textPersonName"
++        app:layout_constraintStart_toStartOf="@+id/lbl_email"
++        app:layout_constraintTop_toBottomOf="@+id/lbl_phonenumber" />
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/LoginActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/LoginActivity.java	(date 1603658791410)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/LoginActivity.java	(date 1603658791410)
+@@ -0,0 +1,31 @@
++package org.ehsan.travelexpertsoosd;
++
++import androidx.annotation.DrawableRes;
++import androidx.appcompat.app.AppCompatActivity;
++
++import android.content.Intent;
++import android.os.Bundle;
++import android.util.Log;
++import android.view.View;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.ImageView;
++
++
++public class LoginActivity extends AppCompatActivity {
++
++    EditText txt_email, txt_password;
++    ImageView img_login;
++    Button btn_submit;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_login);
++        View view;
++        img_login = findViewById(R.id.img_login);
++
++        img_login.setImageResource(R.drawable.icon_sleepyowl);
++    }
++
++}
