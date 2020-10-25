@@ -12,7 +12,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
+//       Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
+       Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         //lvPictures.setAdapter(adapter);
         startActivity(intent);
 
