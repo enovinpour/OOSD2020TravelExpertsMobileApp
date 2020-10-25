@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileMainActivity"></activity>
+        <activity android:name=".PackageBookActivity2"></activity>
+        <activity android:name=".PackageSelectActivity" />
         <activity android:name=".CreditCardActivity" />
         <activity android:name=".CheckoutActivity" />
         <activity android:name=".MainActivity">
