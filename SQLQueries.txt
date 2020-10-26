@@ -8,4 +8,4 @@ ALTER TABLE customers
 ADD Points int(6);
 
 Alter Table rewards
-Add PointsCost decimal;
+Add PointsCost int(6);
