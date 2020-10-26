@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/txt_password"
+        android:layout_width="350dp"
+        android:layout_height="52dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_password" />
+
+    <TextView
+        android:id="@+id/lbl_email"
+        android:layout_width="61dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="40dp"
+        android:text="Email"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_email"
+        app:layout_constraintTop_toBottomOf="@+id/txt_custphone" />
+
+    <TextView
+        android:id="@+id/lbl_phonenumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Phone Number"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_custphone"
+        app:layout_constraintTop_toBottomOf="@+id/txt_lastName" />
+
+    <TextView
+        android:id="@+id/lbl_lastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Last Name"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_lastName"
+        app:layout_constraintTop_toBottomOf="@+id/txt_firstName" />
+
+    <TextView
+        android:id="@+id/lbl_firstname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="First Name"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_firstName"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
+
+    <TextView
+        android:id="@+id/lbl_initial"
+        android:layout_width="56dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="50dp"
+        android:text="Initial"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.742"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="264dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="30dp"
+        android:letterSpacing=".5"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_password"
+        app:layout_constraintVertical_bias="0.181" />
+
+    <TextView
+        android:id="@+id/lbl_register"
+        android:layout_width="144dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="88dp"
+        android:letterSpacing=".2"
+        android:text="Register"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txt_email"
+        android:layout_width="350dp"
+        android:layout_height="58dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/lbl_password"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_email" />
+
+    <TextView
+        android:id="@+id/lbl_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Password"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_password"
+        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
+
+    <EditText
+        android:id="@+id/txt_firstName"
+        android:layout_width="225dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_initial"
+        app:layout_constraintStart_toStartOf="@+id/lbl_lastname" />
+
+    <EditText
+        android:id="@+id/txt_lastName"
+        android:layout_width="353dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/lbl_phonenumber"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_lastname" />
+
+    <EditText
+        android:id="@+id/txt_initial"
+        android:layout_width="56dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.742"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_initial" />
+
+    <EditText
+        android:id="@+id/txt_custphone"
+        android:layout_width="348dp"
+        android:layout_height="49dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/lbl_email"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_phonenumber" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

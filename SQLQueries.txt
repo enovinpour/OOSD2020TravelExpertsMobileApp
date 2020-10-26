@@ -6,3 +6,6 @@ ADD Password nvarchar(50);
 
 ALTER TABLE customers
 ADD Points int(6);
+
+Alter Table rewards
+Add PointsCost int(6);

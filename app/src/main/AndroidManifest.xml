@@ -11,6 +11,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".PackageBookActivity2"></activity>
+        <activity android:name=".LoginActivity"/>
         <activity android:name=".PackageSelectActivity" />
         <activity android:name=".CreditCardActivity" />
         <activity android:name=".CheckoutActivity" />
