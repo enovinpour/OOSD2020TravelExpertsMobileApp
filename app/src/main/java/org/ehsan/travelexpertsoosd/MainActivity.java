@@ -17,7 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
 //       Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
 //       Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-       Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);
+//     Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+     Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);
         startActivity(intent);
     }
 
