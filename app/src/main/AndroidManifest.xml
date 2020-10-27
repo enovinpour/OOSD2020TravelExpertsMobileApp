@@ -16,7 +16,9 @@
         <activity android:name=".PackageSelectActivity" />
         <activity android:name=".CreditCardActivity" />
         <activity android:name=".CheckoutActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".ProfileMainActivity"/>
+        <activity android:name=".ProfileEditActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
