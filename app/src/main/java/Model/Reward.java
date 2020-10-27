@@ -3,15 +3,20 @@ package Model;
 public class Reward {
     int RewardId;
     String RwdName;
-    String RwdDesc;
+    String RwdDescription;
     int PointsCost;
+    String ImgName;
+    int CustomerId;
 
-    public Reward(int rewardId, String rwdName, String rwdDesc, int pointsCost) {
+    public Reward(int rewardId, String rwdName, String rwdDescription, int pointsCost, String imgName, int customerId) {
         RewardId = rewardId;
         RwdName = rwdName;
-        RwdDesc = rwdDesc;
+        RwdDescription = rwdDescription;
         PointsCost = pointsCost;
+        ImgName = imgName;
+        CustomerId = customerId;
     }
+
 
     public int getRewardId() {
         return RewardId;
@@ -29,12 +34,12 @@ public class Reward {
         RwdName = rwdName;
     }
 
-    public String getRwdDesc() {
-        return RwdDesc;
+    public String getRwdDescription() {
+        return RwdDescription;
     }
 
-    public void setRwdDesc(String rwdDesc) {
-        RwdDesc = rwdDesc;
+    public void setRwdDescription(String rwdDescription) {
+        RwdDescription = rwdDescription;
     }
 
     public int getPointsCost() {
@@ -45,10 +50,26 @@ public class Reward {
         PointsCost = pointsCost;
     }
 
+    public String getImgName() {
+        return ImgName;
+    }
+
+    public void setImgName(String imgName) {
+        ImgName = imgName;
+    }
+
+    public int getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        CustomerId = customerId;
+    }
+
     @Override
     public String toString() {
         return "Reward Name: " + RwdName
-                + "\n Reward Description: " + RwdDesc
+                + "\n Reward Description: " + RwdDescription
                 + "\n Points Cost: " + PointsCost;
     }
 }

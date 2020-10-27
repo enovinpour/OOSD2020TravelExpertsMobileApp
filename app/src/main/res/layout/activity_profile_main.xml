@@ -16,37 +16,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="false"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/imgProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
+                android:layout_marginVertical="15dp"
+                android:layout_marginStart="68dp"
                 android:src="@drawable/profilesmall"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <Button
                 android:id="@+id/btnEditProfile"
                 android:layout_width="162dp"
                 android:layout_height="46dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="63dp"
-                android:layout_marginEnd="87dp"
-                android:layout_marginBottom="59dp"
                 android:background="#00FFFFFF"
                 android:drawableEnd="@drawable/forwardarrow"
-                android:text="Testy Test"
                 android:textAlignment="textStart"
                 android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.264"
+                app:layout_constraintStart_toEndOf="@+id/imgProfile"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -68,6 +70,7 @@
         android:drawablePadding="10dp"
         android:fontFamily="@font/roboto"
         android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="Explore"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,6 +88,7 @@
         android:drawablePadding="10dp"
         android:fontFamily="@font/roboto"
         android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="Home"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,12 +101,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
-        android:drawableStart="@drawable/staricon"
+        android:drawableStart="@drawable/rewardsicon"
         android:drawableEnd="@drawable/forwardarrow"
         android:drawablePadding="10dp"
         android:fontFamily="@font/roboto"
         android:paddingLeft="15dp"
-        android:text="Favorites"
+        android:paddingRight="15dp"
+        android:text="Rewards"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
