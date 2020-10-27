@@ -13,12 +13,15 @@
         <activity android:name=".PackageBookActivity2"></activity>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".RegisterActivity"/>
+        <activity
+            android:name=".CreditCardActivity"
+            android:label="@string/title_activity_credit_card"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".PackageSelectActivity" />
-        <activity android:name=".CreditCardActivity" />
-        <activity android:name=".CheckoutActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".ProfileMainActivity"/>
-        <activity android:name=".ProfileEditActivity">
+        <activity
+            android:name=".CheckoutActivity"
+            android:parentActivityName=".PackageSelectActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
