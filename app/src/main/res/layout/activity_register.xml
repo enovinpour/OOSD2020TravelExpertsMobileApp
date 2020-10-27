@@ -17,26 +17,26 @@
 
     <TextView
         android:id="@+id/lbl_email"
-        android:layout_width="61dp"
-        android:layout_height="21dp"
+        android:layout_width="176dp"
+        android:layout_height="22dp"
         android:layout_marginTop="40dp"
         android:text="Email"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/txt_email"
-        app:layout_constraintTop_toBottomOf="@+id/txt_custphone" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_custPhone" />
 
     <TextView
-        android:id="@+id/lbl_phonenumber"
+        android:id="@+id/lbl_phoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Phone Number"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/txt_custphone"
+        app:layout_constraintStart_toStartOf="@+id/txt_custPhone"
         app:layout_constraintTop_toBottomOf="@+id/txt_lastName" />
 
     <TextView
-        android:id="@+id/lbl_lastname"
+        android:id="@+id/lbl_lastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_firstName" />
 
     <TextView
-        android:id="@+id/lbl_firstname"
+        android:id="@+id/lbl_firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_submit"
         android:layout_width="264dp"
         android:layout_height="43dp"
         android:layout_marginTop="30dp"
@@ -121,7 +121,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBaseline_toBaselineOf="@+id/txt_initial"
-        app:layout_constraintStart_toStartOf="@+id/lbl_lastname" />
+        app:layout_constraintStart_toStartOf="@+id/lbl_lastName" />
 
     <EditText
         android:id="@+id/txt_lastName"
@@ -129,8 +129,8 @@
         android:layout_height="48dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/lbl_phonenumber"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_lastname" />
+        app:layout_constraintStart_toStartOf="@+id/lbl_phoneNumber"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_lastName" />
 
     <EditText
         android:id="@+id/txt_initial"
@@ -145,12 +145,12 @@
         app:layout_constraintTop_toBottomOf="@+id/lbl_initial" />
 
     <EditText
-        android:id="@+id/txt_custphone"
+        android:id="@+id/txt_custPhone"
         android:layout_width="348dp"
         android:layout_height="49dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="@+id/lbl_email"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_phonenumber" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_phoneNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
