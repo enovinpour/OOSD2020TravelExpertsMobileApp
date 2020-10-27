@@ -10,10 +10,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_profile_edit);
 
 //       Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
-       Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+       Intent intent = new Intent(getApplicationContext(), ProfileEditActivity.class);
         //lvPictures.setAdapter(adapter);
         startActivity(intent);
 
