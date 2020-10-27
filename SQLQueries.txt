@@ -28,3 +28,39 @@ INSERT INTO apprewards (RwdName, RwdDescription, PointsCost, ImgName)
 VALUES ('Bus Ride to Banff', 'One free adult bus ticket to Banff from Calgary', 10000, 'banfflake'),
 ('Airbnb Cash', 'Pay for some of your Airbnb stay with your rewards.', 15000, 'airbnb'),
 ('Drumheller Baloon Ride', 'Romantic balloon ride for two over the Horseshoe Canyon Drumheller', 20000, 'drumballoon');
+
+//These queries are for someone starting from scratch with fresh db. Should be able to run it all in one go
+
+ALTER TABLE packages RENAME TO packagesalberta;
+
+ALTER TABLE classes RENAME TO bookingsclasses;
+
+ALTER TABLE packagesalberta MODIFY PkgDesc Text (1000) NOT NULL;
+
+ALTER TABLE packagesalberta
+ADD PkgLongDesc TEXT (1000) NOT NULL,
+ADD PkgHotelDesc TEXT (1000),
+ADD	PkgFoodDesc TEXT (1000),
+ADD	PkgCurrencyType varchar(5),
+ADD	PkgCostDesc varchar(255),
+ADD	PkgImageMain varchar(255) NOT NULL,
+ADD	PkgImageExtraActivity varchar(255),
+ADD	PkgImageHotel varchar(255),
+ADD	PkgImageFood varchar(255),
+ADD	PkgImageMap varchar(255),
+ADD	PkgFoodIncluded varchar(3) NOT NULL,
+ADD	PkgHotelIncluded varchar(3) NOT NULL,
+ADD	PkgFamilyFriendly varchar(3) NOT NULL,
+ADD	PkgNumNights INT(3) NULL,
+ADD	PkgNumOfGuests INT(3) NULL,
+ADD	PkgLocation VARCHAR(255),
+ADD	PkgLongitude DOUBLE,
+ADD PkgLatitude DOUBLE;
+
+INSERT INTO `packagesalberta`( `PkgName`, `PkgStartDate`, `PkgEndDate`, `PkgDesc`, `PkgBasePrice`, `PkgAgencyCommission`, `PkgLongDesc`, `PkgHotelDesc`, `PkgFoodDesc`, `PkgCurrencyType`, `PkgCostDesc`, `PkgImageMain`, `PkgImageExtraActivity`, `PkgImageHotel`, `PkgImageFood`, `PkgImageMap`, `PkgFoodIncluded`, `PkgHotelIncluded`, `PkgFamilyFriendly`, `PkgNumNights`, `PkgNumOfGuests`, `PkgLocation`, `PkgLongitude`, `PkgLatitude`) VALUES ('Drumheller Fossil Excursion', '2020-12-25 00:00:00', '2021-01-04 00:00:00','Explore Dinosaur Provincial Park UNESCO World Heritage Site and learn why it was and is important to the First Nations people fossil hunters palaeontologists who came to this rugged part of Alberta in years past','75','10','Short hike with park interpreter.Experience the stunning views and harsh environment of the largest badlands in Canada.Interesting land formations and fossils including an in-situ hadrosaur femur','No Hotel is provided','Snacks with be provided','CA','per adult for the day','drumheller','drumheller',' ',' ','testmap','Yes','No','Yes','0','1','Township Road 210A','111.481690','50.759624');
+
+
+
+
+
+
