@@ -7,5 +7,24 @@ ADD Password nvarchar(50);
 ALTER TABLE customers
 ADD Points int(6);
 
-Alter Table rewards
-Add PointsCost int(6);
+// Do this first
+ALTER TABLE rewards
+DROP COLUMN PointsCost;
+
+//then this
+CREATE TABLE apprewards (
+    RewardId int NOT NULL AUTO_INCREMENT,
+    RwdName varchar(50),
+    RwdDescription varchar(300),
+    PointsCost int(6),
+    ImgName varchar(30),
+    CustomerId int,
+    PRIMARY KEY (RewardId),
+    FOREIGN KEY (CustomerId) REFERENCES customers(CustomerId)
+);
+
+//then this
+INSERT INTO apprewards (RwdName, RwdDescription, PointsCost, ImgName)
+VALUES ('Bus Ride to Banff', 'One free adult bus ticket to Banff from Calgary', 10000, 'banfflake'),
+('Airbnb Cash', 'Pay for some of your Airbnb stay with your rewards.', 15000, 'airbnb'),
+('Drumheller Baloon Ride', 'Romantic balloon ride for two over the Horseshoe Canyon Drumheller', 20000, 'drumballoon');
