@@ -26,5 +26,5 @@ CREATE TABLE apprewards (
 //then this
 INSERT INTO apprewards (RwdName, RwdDescription, PointsCost, ImgName)
 VALUES ('Bus Ride to Banff', 'One free adult bus ticket to Banff from Calgary', 10000, 'banfflake'),
-VALUES ('Airbnb Cash', 'Pay for some of your Airbnb stay with your rewards.', 15000, 'airbnb'),
-VALUES ('Drumheller Baloon Ride', 'Romantic balloon ride for two over the Horseshoe Canyon Drumheller', 20000, 'drumballoon');
+('Airbnb Cash', 'Pay for some of your Airbnb stay with your rewards.', 15000, 'airbnb'),
+('Drumheller Baloon Ride', 'Romantic balloon ride for two over the Horseshoe Canyon Drumheller', 20000, 'drumballoon');
