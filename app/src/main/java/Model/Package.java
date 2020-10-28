@@ -4,9 +4,11 @@ import java.io.Serializable;
 public class Package implements Serializable{
 
     private int packageId;
-    private String pkgImageMain;
-    private String pkgName;
-    private String pkgCostDesc;
+    private String pkgImageMain, pkgName, pkgCostDesc;
+    private String PkgCurrencyType, PkgBasePrice, PkgFamilyFriendly;
+    private String PkgFoodIncluded, PkgHotelIncluded , PkgDesc, PkgLongDesc;
+    private String PkgImageMap, PkgLocation, PkgImageHotel, PkgHotelDesc;
+    private String pkgFoodDesc ;
 
     public Package(int packageId, String pkgName, String pkgImageMain, String pkgCostDesc) {
         this.pkgImageMain = pkgImageMain;
@@ -49,6 +51,102 @@ public class Package implements Serializable{
 
     public void setPkgCostDesc(String pkgCostDesc) {
         this.pkgCostDesc = pkgCostDesc;
+    }
+
+    public String getPkgCurrencyType() {
+        return PkgCurrencyType;
+    }
+
+    public void setPkgCurrencyType(String pkgCurrencyType) {
+        PkgCurrencyType = pkgCurrencyType;
+    }
+
+    public String getPkgBasePrice() {
+        return PkgBasePrice;
+    }
+
+    public void setPkgBasePrice(String pkgBasePrice) {
+        PkgBasePrice = pkgBasePrice;
+    }
+
+    public String getPkgFamilyFriendly() {
+        return PkgFamilyFriendly;
+    }
+
+    public void setPkgFamilyFriendly(String pkgFamilyFriendly) {
+        PkgFamilyFriendly = pkgFamilyFriendly;
+    }
+
+    public String getPkgFoodIncluded() {
+        return PkgFoodIncluded;
+    }
+
+    public void setPkgFoodIncluded(String pkgFoodIncluded) {
+        PkgFoodIncluded = pkgFoodIncluded;
+    }
+
+    public String getPkgHotelIncluded() {
+        return PkgHotelIncluded;
+    }
+
+    public void setPkgHotelIncluded(String pkgHotelIncluded) {
+        PkgHotelIncluded = pkgHotelIncluded;
+    }
+
+    public String getPkgDesc() {
+        return PkgDesc;
+    }
+
+    public void setPkgDesc(String pkgDesc) {
+        PkgDesc = pkgDesc;
+    }
+
+    public String getPkgLongDesc() {
+        return PkgLongDesc;
+    }
+
+    public void setPkgLongDesc(String pkgLongDesc) {
+        PkgLongDesc = pkgLongDesc;
+    }
+
+    public String getPkgImageMap() {
+        return PkgImageMap;
+    }
+
+    public void setPkgImageMap(String pkgImageMap) {
+        PkgImageMap = pkgImageMap;
+    }
+
+    public String getPkgLocation() {
+        return PkgLocation;
+    }
+
+    public void setPkgLocation(String pkgLocation) {
+        PkgLocation = pkgLocation;
+    }
+
+    public String getPkgImageHotel() {
+        return PkgImageHotel;
+    }
+
+    public void setPkgImageHotel(String pkgImageHotel) {
+        PkgImageHotel = pkgImageHotel;
+    }
+
+    public String getPkgHotelDesc() {
+        return PkgHotelDesc;
+    }
+
+    public void setPkgHotelDesc(String pkgHotelDesc) {
+        PkgHotelDesc = pkgHotelDesc;
+    }
+
+    public String getPkgFoodDesc() {
+        return pkgFoodDesc;
+    }
+
+    public void setPkgFoodDesc(String pkgFoodDesc) {
+        this.pkgFoodDesc = pkgFoodDesc;
     }
 
     public String toString() {

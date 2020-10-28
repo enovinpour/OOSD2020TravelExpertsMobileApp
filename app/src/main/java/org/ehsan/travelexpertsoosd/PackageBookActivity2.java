@@ -1,6 +1,7 @@
 package org.ehsan.travelexpertsoosd;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,18 +24,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 import Model.Package;
 
 public class PackageBookActivity2 extends AppCompatActivity {
 
-    ImageView ivPackageBook;
+    Package checkoutPackage;
+    ImageView ivPackageBook, ivPackageMap, ivHotel;
     ImageButton imgBtnBack;
-    TextView tvPackageBookPgkName;
-    TextView tvPackageCostDesc;
+    TextView tvPackageBookPgkName, tvPackageCostDesc, tvCost, tvFamilyFriendly, tvFoodIncluded, tvAbout;
+    TextView tvLongDesc, tvLocation, tvCostFinal, tvHotelDetails;
     RequestQueue requestQueue;
     Package listViewPackage;
+    CardView cvHotel;
+    Button btnBookNow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +49,37 @@ public class PackageBookActivity2 extends AppCompatActivity {
         ivPackageBook = findViewById(R.id.ivPackageBook);
         tvPackageBookPgkName = findViewById(R.id.tvPackageBookPgkName);
         tvPackageCostDesc = findViewById(R.id.tvCostDescription);
+        tvCost = findViewById(R.id.tvCost);
+        tvFamilyFriendly = findViewById(R.id.tvFamilyFriendly);
+        tvFoodIncluded = findViewById(R.id.tvFoodIncluded);
+        tvAbout = findViewById(R.id.tvAbout);
+        tvLongDesc = findViewById(R.id.tvDescription);
+        ivPackageMap = findViewById(R.id.ivPackageMap);
+        tvLocation = findViewById(R.id.tvLocation);
+        tvCostFinal = findViewById(R.id.tvCostFinal);
+        ivHotel = findViewById(R.id.ivHotel);
+        cvHotel = findViewById(R.id.cvHotel);
+        cvHotel.setVisibility(View.GONE);
+        btnBookNow = findViewById(R.id.btnBookNow);
+        tvHotelDetails = findViewById(R.id.tvHotelDetails);
 
         Intent intent = getIntent();
+        //this is the package that was passed from the PackageSelect activity
         Package newPackage = (Package) intent.getSerializableExtra("packagePassed");
 
-
-
-
         Executors.newSingleThreadExecutor().execute(new GetPackage(newPackage.getPackageId()));
+
+        btnBookNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                //pass the select package object to the checkout page
+                intent.putExtra("passedObject", checkoutPackage );
+                startActivity(intent);
+            }
+        });
+
+
         //ivPackageBook.setImageResource(res_image);
         //tvPackageBookPgkName.setText(newPackage.getPkgName());
         //int res_image = newPackage.getPkgImageMain();
@@ -84,7 +113,7 @@ public class PackageBookActivity2 extends AppCompatActivity {
             StringBuffer buffer = new StringBuffer();
             //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
             String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
-            Log.d("doug", "RESOURCE: " + url);
+
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -94,6 +123,8 @@ public class PackageBookActivity2 extends AppCompatActivity {
                     JSONObject pkg = null;
                     try {
                         pkg = new JSONObject(response);
+                        checkoutPackage = new Package(pkg.getInt("packageId"),pkg.getString("pkgName"));
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -106,9 +137,39 @@ public class PackageBookActivity2 extends AppCompatActivity {
                             try {
                                 tvPackageBookPgkName.setText(finalPkg.getString("pkgName") + "");
                                 String mainimageName = finalPkg.getString("pkgImageMain");
-                                int resID1 = getResources().getIdentifier(mainimageName, "drawable", getPackageName());
-                                ivPackageBook.setImageResource(resID1);
+                                int imageMainId = getResources().getIdentifier(mainimageName, "drawable", getPackageName());
+                                ivPackageBook.setImageResource(imageMainId);
                                 tvPackageCostDesc.setText(finalPkg.getString("pkgCostDesc") + "");
+
+                                //format the double number from database into currency format
+                                NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CANADA);
+                                String currencyNumber = format.format(finalPkg.getDouble("pkgBasePrice"));
+                                tvCost.setText(finalPkg.getString("pkgCurrencyType") + " " +  currencyNumber  );
+
+                                tvFamilyFriendly.setText(finalPkg.getString("pkgFamilyFriendly"));
+                                tvFoodIncluded.setText(finalPkg.getString("pkgFoodIncluded"));
+                                tvAbout.setText((finalPkg.getString("pkgDesc")));
+                                tvLongDesc.setText(finalPkg.getString("pkgLongDesc"));
+
+                                String mainimageMap = finalPkg.getString("pkgImageMap");
+                                int imageMapId = getResources().getIdentifier(mainimageMap, "drawable", getPackageName());
+                                ivPackageMap.setImageResource(imageMapId);
+
+                                tvLocation.setText(finalPkg.getString("pkgLocation"));
+                                tvCostFinal.setText(finalPkg.getString("pkgCurrencyType") + " " +  currencyNumber  );
+
+                                String imageHotel = finalPkg.getString("pkgImageHotel");
+
+                                //Log.d("doug", "RESOURCE: " + imageHotel);
+                                int imageHotelId = getResources().getIdentifier(imageHotel, "drawable", getPackageName());
+                                //Log.d("doug", "RESOURCE: " + imageHotelId);
+
+                                if (imageHotelId != 0) {
+                                    cvHotel.setVisibility(View.VISIBLE);
+                                    ivHotel.setImageResource(imageHotelId);
+                                    tvHotelDetails.setText(finalPkg.getString("pkgHotelDesc"));
+                                }
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
