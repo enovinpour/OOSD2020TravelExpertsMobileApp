@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.ehsan.travelexpertsoosd">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,11 +20,13 @@
         <activity
             android:name=".CreditCardActivity"
             android:label="@string/title_activity_credit_card"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".CheckoutActivity">
+        </activity>
         <activity android:name=".PackageSelectActivity" />
-        <activity
-            android:name=".CheckoutActivity"
-            android:parentActivityName=".PackageSelectActivity" />
+        <activity android:name=".CheckoutActivity"
+            android:parentActivityName=".PackageSelectActivity">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
