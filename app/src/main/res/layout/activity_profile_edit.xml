@@ -55,12 +55,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btnSave"
                     app:layout_constraintHorizontal_bias="0.572"
-                    app:layout_constraintStart_toEndOf="@+id/btnBack"
+                    app:layout_constraintStart_toEndOf="@+id/btnEditBack"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
                 <ImageButton
-                    android:id="@+id/btnBack"
+                    android:id="@+id/btnEditBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

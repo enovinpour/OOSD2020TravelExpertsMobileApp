@@ -1,6 +1,8 @@
 package Model;
 
-public class Reward {
+import java.io.Serializable;
+
+public class Reward implements Serializable {
     int RewardId;
     String RwdName;
     String RwdDescription;
