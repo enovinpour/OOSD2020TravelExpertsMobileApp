@@ -18,6 +18,9 @@
         <activity android:name=".PackageBookActivity2" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".RewardsActivity"></activity>
+        <activity android:name=".ProfileMainActivity" />
+        <activity android:name=".ProfileEditActivity" />
         <activity
             android:name=".CreditCardActivity"
             android:label="@string/title_activity_credit_card"
