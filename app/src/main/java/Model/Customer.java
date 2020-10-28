@@ -15,6 +15,25 @@ public class Customer {
     private int points;
     private String password;
 
+    public Customer(int custId, String custFirstName, String custLastName, String custAddress,
+                    String custCity, String custProv, String custPostal, String custCountry,
+                    String custHomePhone, String custBusPhone,
+                    String custEmail, int points, String password) {
+        this.custId = custId;
+        this.custFirstName = custFirstName;
+        this.custLastName = custLastName;
+        this.custAddress = custAddress;
+        this.custCity = custCity;
+        this.custProv = custProv;
+        this.custPostal = custPostal;
+        this.custCountry = custCountry;
+        this.custHomePhone = custHomePhone;
+        this.custBusPhone = custBusPhone;
+        this.custEmail = custEmail;
+        this.points = points;
+        this.password = password;
+    }
+
     public int getCustId() {
         return custId;
     }
