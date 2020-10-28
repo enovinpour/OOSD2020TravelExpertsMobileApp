@@ -2,6 +2,8 @@ package org.ehsan.travelexpertsoosd;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +28,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.concurrent.Executors;
 
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,14 +44,20 @@ import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
 
 public class LoginActivity extends AppCompatActivity {
 
+    SharedPreferences pref;
+    Intent intent;
     View view;
     EditText txt_email, txt_password;
     ImageView img_login;
     Button btn_submit;
     TextView lbl_email, lbl_password;
     RequestQueue requestQueue;
+    String email;
+    String password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        pref = getSharedPreferences("user_details", MODE_PRIVATE);
+        intent = new Intent(LoginActivity.this, ProfileMainActivity.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -62,87 +75,120 @@ public class LoginActivity extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    String email = txt_email.getText().toString();
-                    String password = txt_password.getText().toString();
-                    if (email.isEmpty()){ //checks if email is empty
-                            lbl_email.setText("Email * required field *");
-                            lbl_email.setTextColor(Color.RED);
-                    } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
-                        lbl_email.setText("Email * invalid email *");
-                        lbl_email.setTextColor(Color.RED);
-                    } else {
-                        String validEmail = email;  //else, email is valid - pass it to new validEmail variable
-                    }
 
-                    if (password.isEmpty()){ //checks if password is empty
-                            lbl_password.setText("Password *required field *");
-                            lbl_password.setTextColor(Color.RED);
-                    } else if (!isValidPassword(password)){ //checks if password is valid
+                email = txt_email.getText().toString();
+                password = txt_password.getText().toString();
+
+                //
+                if (email.isEmpty()) { //checks if email is empty
+                    lbl_email.setText("Email * required field *");
+                    lbl_email.setTextColor(Color.RED);
+                } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
+                    lbl_email.setText("Email * invalid email *");
+                    lbl_email.setTextColor(Color.RED);
+                } else {
+                    if (password.isEmpty()) { //checks if password is empty
+                        lbl_password.setText("Password *required field *");
+                        lbl_password.setTextColor(Color.RED);
+                    } else if (!isValidPassword(password)) { //checks if password is valid
                         lbl_password.setText("Password * invalid password *");
                         lbl_password.setTextColor(Color.RED);
-                    } else {  //this should only operate if the previous 2 if statements return true? (QUESTION THAT? )
-                        String validPassword = password; // else, password is valid - pass it to validPassword variable
+                    } else {
+                        //else, email and password are valid
+                        Executors.newSingleThreadExecutor().execute(new getCustomer(email));
                     }
-
-                    // so now we know we have a valid password and email, next step is to check that with the DB
-                            // some sort of magic to connect with JPA?
-
-
-                    // if password and email exist together in the db - login is successfull and redirects user to the main page
-                    // sql query   (  SELECT * FROM `customers` WHERE `CustEmail` = 'testcustomer@email.com' AND `Password` = 'Password#1'  )
-                    // where , the custEmail = validEmail and password = validPassword
-            }
-
-        });
-        class PostAgent implements Runnable {
-            private Customer customer;
-
-            public PostAgent(Customer customer) {
-                this.customer = customer;
-            }
-
-            @Override
-            public void run() {
-                //send JSON data to REST service
-                String url = "http://10.0.0.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/logincustomer";
-                JSONObject obj = new JSONObject();
-                try {
-                    obj.put("CustEmail", customer.getCustEmail() + "");
-                    obj.put("Password", customer.getPassword() + "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(final JSONObject response) {
-                                Log.d("harv", "response=" + response);
-                                VolleyLog.wtf(response.toString(), "utf-8");
-
-                                //display result message
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("crystal", "error=" + error);
-                                VolleyLog.wtf(error.getMessage(), "utf-8");
-                            }
-                        });
-
-                requestQueue.add(jsonObjectRequest);
             }
+        });
+    }
+
+    class getCustomer implements Runnable{
+        private String validEmail;
+
+        public getCustomer(String validEmail) {
+            this.validEmail = validEmail;
         }
+
+        @Override
+        public void run() {
+            //retrieve JSON data from REST service into StringBuffer
+            StringBuffer buffer = new StringBuffer();
+            //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
+            String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/" + validEmail;
+            Log.d("crystal", "Auth: " + url);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    VolleyLog.wtf(response, "utf-8");
+                    //convert JSON data from response string into an Agent
+                    //create a json array to recieve the response- loop through it to make it into an object
+
+                    String emailfromUrl = "";
+                    String passwordfromUrl = "";
+                    int idfromUrl = 0;
+
+                    JSONObject pkg = null;
+                    JSONArray customerResponse = null;
+                    try {
+                        customerResponse = new JSONArray(response);
+                        if(customerResponse.isNull(0)){
+
+                        } else {
+                            pkg = customerResponse.getJSONObject(0);
+//                            String emailfromUrl ="";
+//                            String passwordfromUrl = "";
+                            idfromUrl = pkg.getInt("CustomerId");
+                            emailfromUrl = pkg.getString("custEmail");
+                            passwordfromUrl = pkg.getString("Password");
+                        }
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    //update ListView with the adapter of Agents
+//                    final JSONObject finalPkg = pkg;
+                        final String customerEmail = emailfromUrl;
+                        final String customerPassword = passwordfromUrl;
+                        final int customerid = idfromUrl;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                                String intstring = String.valueOf(customerid);
+                                Log.d("crystalidtest", intstring);
+                                Log.d("crystalemailtest" , customerEmail);
+                                Log.d("crystalpasswordtest" , customerPassword);
+
+                                if(email.equals(customerEmail)  && password.equals(customerPassword)){
+                                    // allows login
+//                                    if (pref.contains("email") && pref.contains("password")){
+//
+//                                    }
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.putInt("id", customerid);
+                                    editor.commit();
+                                    startActivity(intent);
+                                    //redirect
+
+                                    Log.d("successlogin", "login successfull");
+                                } else {
+                                    //failure case - some sort of message
+                                    lbl_password.setText("Password * invalid password *");
+                                    lbl_password.setTextColor(Color.RED);
+
+                                    lbl_email.setText("Email * invalid email *");
+                                    lbl_email.setTextColor(Color.RED);
+                                }
+                        }
+                    });
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.wtf(error.getMessage(), "utf-8");
+                }
+            });
+
+            requestQueue.add(stringRequest);
+        }
+    }
 }
 
-}
