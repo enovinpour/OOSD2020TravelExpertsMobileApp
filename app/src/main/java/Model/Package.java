@@ -3,23 +3,35 @@ package Model;
 import java.io.Serializable;
 public class Package implements Serializable{
 
-    private Integer pkgImageMain;
+    private int packageId;
+    private String pkgImageMain;
     private String pkgName;
+    private String pkgCostDesc;
 
-    //public Package(Integer pkgImageMain) {
-        //this.pkgImageMain = pkgImageMain;
-    //}
-
-    public Package(Integer pkgImageMain, String pkgName) {
+    public Package(int packageId, String pkgName, String pkgImageMain, String pkgCostDesc) {
         this.pkgImageMain = pkgImageMain;
+        this.pkgName = pkgName;
+        this.packageId = packageId;
+    }
+
+    public Package(int packageId, String pkgName) {
+        this.packageId = packageId;
         this.pkgName = pkgName;
     }
 
-    public Integer getPkgImageMain() {
+    public int getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(int packageId) {
+        this.packageId = packageId;
+    }
+
+    public String getPkgImageMain() {
         return pkgImageMain;
     }
 
-    public void setPkgImageMain(Integer pkgImageMain) {
+    public void setPkgImageMain(String pkgImageMain) {
         this.pkgImageMain = pkgImageMain;
     }
 
@@ -29,5 +41,17 @@ public class Package implements Serializable{
 
     public void setPkgName(String pkgName) {
         this.pkgName = pkgName;
+    }
+
+    public String getPkgCostDesc() {
+        return pkgCostDesc;
+    }
+
+    public void setPkgCostDesc(String pkgCostDesc) {
+        this.pkgCostDesc = pkgCostDesc;
+    }
+
+    public String toString() {
+        return pkgName;
     }
 }

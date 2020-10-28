@@ -15,10 +15,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//       Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
-//       Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+       Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
+//      Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 //     Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
-     Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);
+     //Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);
         startActivity(intent);
     }
 
