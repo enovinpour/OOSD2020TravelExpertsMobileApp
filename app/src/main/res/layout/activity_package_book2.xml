@@ -76,7 +76,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvCostDetails"
+                    android:id="@+id/tvCostDescription"
                     android:layout_width="226dp"
                     android:layout_height="9dp"
                     android:layout_marginLeft="10dp"
