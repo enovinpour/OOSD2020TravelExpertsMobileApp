@@ -73,6 +73,7 @@
         android:layout_width="264dp"
         android:layout_height="43dp"
         android:layout_marginTop="30dp"
+        android:backgroundTint="#a4c2f4"
         android:letterSpacing=".5"
         android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
