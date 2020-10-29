@@ -1,14 +1,18 @@
 package Model;
 
 import java.io.Serializable;
+import java.sql.Date;
+
 public class Package implements Serializable{
 
     private int packageId;
     private String pkgImageMain, pkgName, pkgCostDesc;
-    private String PkgCurrencyType, PkgBasePrice, PkgFamilyFriendly;
+    private String PkgCurrencyType, PkgFamilyFriendly;
     private String PkgFoodIncluded, PkgHotelIncluded , PkgDesc, PkgLongDesc;
     private String PkgImageMap, PkgLocation, PkgImageHotel, PkgHotelDesc;
-    private String pkgFoodDesc ;
+    private String pkgFoodDesc, pkgImageFood;
+    private double PkgBasePrice, pkgAgencyCommission;
+    private String pkgStartDate, pkgEndDate;
 
     public Package(int packageId, String pkgName, String pkgImageMain, String pkgCostDesc) {
         this.pkgImageMain = pkgImageMain;
@@ -19,6 +23,15 @@ public class Package implements Serializable{
     public Package(int packageId, String pkgName) {
         this.packageId = packageId;
         this.pkgName = pkgName;
+    }
+
+    public Package(int packageId, String pkgName, double pkgBasePrice, String pkgStartDate, String pkgEndDate, double pkgAgencyCommission) {
+        this.packageId = packageId;
+        this.pkgName = pkgName;
+        PkgBasePrice = pkgBasePrice;
+        this.pkgStartDate = pkgStartDate;
+        this.pkgEndDate = pkgEndDate;
+        this.pkgAgencyCommission = pkgAgencyCommission;
     }
 
     public int getPackageId() {
@@ -61,11 +74,11 @@ public class Package implements Serializable{
         PkgCurrencyType = pkgCurrencyType;
     }
 
-    public String getPkgBasePrice() {
+    public double getPkgBasePrice() {
         return PkgBasePrice;
     }
 
-    public void setPkgBasePrice(String pkgBasePrice) {
+    public void setPkgBasePrice(double pkgBasePrice) {
         PkgBasePrice = pkgBasePrice;
     }
 
@@ -151,5 +164,37 @@ public class Package implements Serializable{
 
     public String toString() {
         return pkgName;
+    }
+
+    public String getPkgStartDate() {
+        return pkgStartDate;
+    }
+
+    public void setPkgStartDate(String pkgStartDate) {
+        this.pkgStartDate = pkgStartDate;
+    }
+
+    public String getPkgEndDate() {
+        return pkgEndDate;
+    }
+
+    public void setPkgEndDate(String pkgEndDate) {
+        this.pkgEndDate = pkgEndDate;
+    }
+
+    public double getPkgAgencyCommission() {
+        return pkgAgencyCommission;
+    }
+
+    public String getPkgImageFood() {
+        return pkgImageFood;
+    }
+
+    public void setPkgImageFood(String pkgImageFood) {
+        this.pkgImageFood = pkgImageFood;
+    }
+
+    public void setPkgAgencyCommission(double pkgAgencyCommission) {
+        this.pkgAgencyCommission = pkgAgencyCommission;
     }
 }

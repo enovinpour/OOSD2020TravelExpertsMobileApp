@@ -103,7 +103,8 @@ public class PackageSelectActivity extends AppCompatActivity {
         //retrieve JSON data from REST service into StringBuffer
         StringBuffer buffer = new StringBuffer();
         //String url = "http://192.168.0.23:8082/JSPDay4RESTJPAExample/rs/agent/getagentlist";
-        String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackagelist";
+       String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackagelist";
+        //String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackagelist"; //For Ehsans Testing
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
