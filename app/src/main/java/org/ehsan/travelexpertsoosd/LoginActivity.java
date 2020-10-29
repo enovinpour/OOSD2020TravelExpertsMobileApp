@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_linkregister = findViewById(R.id.btn_linkregister);
         lbl_email = findViewById(R.id.lbl_email);
         lbl_password = findViewById(R.id.lbl_password);
-        img_login.setImageResource(R.drawable.icon_sleepyowl);
+        img_login.setImageResource(R.drawable.expertlogo);
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override

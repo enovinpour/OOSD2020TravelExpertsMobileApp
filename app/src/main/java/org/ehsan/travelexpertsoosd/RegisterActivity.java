@@ -1,5 +1,6 @@
 package org.ehsan.travelexpertsoosd;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,13 +37,14 @@ public class RegisterActivity extends AppCompatActivity {
     EditText txt_firstName, txt_lastName, txt_initial, txt_custPhone, txt_email, txt_password;
     Button btn_submit;
     TextView lbl_email, lbl_password, lbl_firstName, lbl_lastName, lbl_initial, lbl_phoneNumber;
+    Intent toLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         requestQueue = Volley.newRequestQueue(this);
-
+        toLogin = new Intent(RegisterActivity.this, LoginActivity.class);
         txt_firstName = findViewById(R.id.txt_firstName);
         txt_initial = findViewById(R.id.txt_initial);
         txt_lastName = findViewById(R.id.txt_lastName);
@@ -69,30 +71,30 @@ public class RegisterActivity extends AppCompatActivity {
                                               String email = txt_email.getText().toString();
                                               String password = txt_password.getText().toString();
 
-                                              if (email.isEmpty()) { //checks if email is empty                          //checks email
-                                                  lbl_email.setText("Email *required field");
-                                                  lbl_email.setTextColor(Color.RED);
-                                              } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /
-                                                  lbl_email.setText("Email * invalid email *");
-                                                  lbl_email.setTextColor(Color.RED);
-                                              } else if (password.isEmpty()) { //checks if password is empty  `           //check password
-                                                  lbl_password.setText("Password *required field *");
-                                                  lbl_password.setTextColor(Color.RED);
-                                              } else if (!isValidPassword(password)) { //checks if password is valid
-                                                  lbl_password.setText("Password * invalid password *");
-                                                  lbl_password.setTextColor(Color.RED);
-                                              } else if (firstName.isEmpty()) {                                           //check first name
-                                                  lbl_firstName.setText("First Name *required field *");
-                                                  lbl_firstName.setTextColor(Color.RED);
-                                              } else if (lastName.isEmpty()) {                                        //check last name
-                                                  lbl_lastName.setText("Last Name *required field *");
-                                                  lbl_lastName.setTextColor(Color.RED);
-                                              } else if (phone.isEmpty()) {                                           //check phone number
-                                                  lbl_phoneNumber.setText("Phone Number *required field *");
-                                                  lbl_phoneNumber.setTextColor(Color.RED);
+                                              if (!EmailValidation(email) || !PhoneNumberValidation(phone) || !FirstNameValidation(firstName) || !LastNameValidation(lastName) || !PasswordValidation(password)) {
+
+                                                  if (!EmailValidation(email)) {
+                                                      EmailValidation(email);
+                                                  }
+
+                                                  if (!PhoneNumberValidation(phone)) {
+                                                      PhoneNumberValidation(phone);
+                                                  }
+
+                                                  if (!FirstNameValidation(firstName)) {
+                                                      FirstNameValidation(firstName);
+
+                                                  }
+                                                  if (!LastNameValidation(lastName)) {
+                                                      LastNameValidation(lastName);
+                                                  }
+
+                                                  if (!PasswordValidation(password)) {
+                                                      PasswordValidation(password);
+                                                  }
                                               } else {
-                                                  //everything is good!
-                                                  // Define customer object using text fields
+
+                                                  {
                                                   Customer customer = new Customer(
                                                           firstName,
                                                           lastName,
@@ -100,13 +102,83 @@ public class RegisterActivity extends AppCompatActivity {
                                                           email,
                                                           password
                                                   );
-                                                    Log.d("customer crystal ", customer.getCustFirstName());
+                                                  Log.d("customer crystal ", customer.getCustFirstName());
 
                                                   Executors.newSingleThreadExecutor().execute(new RegisterActivity.PutCustomer(customer));
+                                                      startActivity(toLogin);
 
+                                                  }
                                               }
                                           }
         });
+    }
+
+    public boolean EmailValidation(String email){
+        if (email.isEmpty()) { //checks if email is empty                          //checks email
+            lbl_email.setText("Email *required field");
+            lbl_email.setTextColor(Color.RED);
+            return false;
+        } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /
+            lbl_email.setText("Email * invalid email *");
+            lbl_email.setTextColor(Color.RED);
+            return false;
+        } else {
+            lbl_email.setText("Email");
+            lbl_email.setTextColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public boolean PasswordValidation(String password){
+        if (password.isEmpty()) { //checks if password is empty  `           //check password
+            lbl_password.setText("Password *required field *");
+            lbl_password.setTextColor(Color.RED);
+            return false;
+        } else if (!isValidPassword(password)) { //checks if password is valid
+            lbl_password.setText("Password * invalid password *");
+            lbl_password.setTextColor(Color.RED);
+            return false;
+        } else {
+            lbl_password.setText("Password");
+            lbl_password.setTextColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public boolean FirstNameValidation(String firstName) {
+        if (firstName.isEmpty()) {                                           //check first name
+            lbl_firstName.setText("First Name *required field *");
+            lbl_firstName.setTextColor(Color.RED);
+            return false;
+        } else {
+            lbl_firstName.setText("First Name");
+            lbl_firstName.setTextColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public boolean LastNameValidation(String LastName) {   //String LastName
+        if (LastName.isEmpty()) {                                           //check first name
+            lbl_lastName.setText("Last Name *required field *");
+            lbl_lastName.setTextColor(Color.RED);
+            return false;
+        } else {
+            lbl_lastName.setText("Last Name");
+            lbl_lastName.setTextColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public boolean PhoneNumberValidation(String phone) {
+        if (phone.isEmpty()) {                                           //check phone number
+            lbl_phoneNumber.setText("Phone Number *required field *");
+            lbl_phoneNumber.setTextColor(Color.RED);
+            return false;
+        } else {
+            lbl_phoneNumber.setText("Phone Number");
+            lbl_phoneNumber.setTextColor(Color.BLACK);
+            return true;
+        }
     }
 
     class PutCustomer implements Runnable {
