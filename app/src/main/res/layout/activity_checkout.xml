@@ -49,13 +49,11 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvQuantity"
+        <NumberPicker
+            android:id="@+id/npQty"
             android:layout_width="match_parent"
-            android:layout_height="37dp"
+            android:layout_height="51dp"
             android:background="@color/LightBlue"
-            android:text="Qty"
-            android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
 
