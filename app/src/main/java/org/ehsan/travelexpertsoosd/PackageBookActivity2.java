@@ -180,11 +180,11 @@ public class PackageBookActivity2 extends AppCompatActivity {
 
                                 String imageFood = finalPkg.getString("pkgImageFood");
                                 //Log.d("doug", "RESOURCE: " + imageHotel);
-                                int imageFoodId = getResources().getIdentifier(imageHotel, "drawable", getPackageName());
+                                int imageFoodId = getResources().getIdentifier(imageFood, "drawable", getPackageName());
                                 //Log.d("doug", "RESOURCE: " + imageHotelId);
                                 if (imageFoodId != 0) {
                                     cvFood.setVisibility(View.VISIBLE);
-                                    ivFood.setImageResource(imageHotelId);
+                                    ivFood.setImageResource(imageFoodId);
                                     tvFoodDetails.setText(finalPkg.getString("pkgFoodDesc"));
                                 }
 

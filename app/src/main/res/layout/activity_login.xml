@@ -21,13 +21,15 @@
         android:id="@+id/txt_registerQ"
         android:layout_width="167dp"
         android:layout_height="18dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="@font/roboto"
         android:text="don't have an account?"
         android:textAlignment="center"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_linkregister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.303"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_submit"
+        app:layout_constraintVertical_bias="0.164" />
 
     <TextView
         android:id="@+id/lbl_register"
@@ -53,16 +55,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_email" />
 
     <TextView
         android:id="@+id/lbl_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="40dp"
         android:text="Email"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/txt_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.213"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,16 +80,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_password" />
 
     <TextView
         android:id="@+id/lbl_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:text="Password"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/txt_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.239"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,9 +117,9 @@
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.126"
         app:layout_constraintStart_toEndOf="@+id/txt_registerQ"
         app:layout_constraintTop_toBottomOf="@+id/btn_submit"
-        app:layout_constraintVertical_bias="0.443" />
+        app:layout_constraintVertical_bias="0.167" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

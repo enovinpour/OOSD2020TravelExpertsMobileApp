@@ -26,18 +26,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginVertical="15dp"
-                android:layout_marginStart="68dp"
+                android:layout_marginStart="36dp"
                 android:src="@drawable/profilesmall"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <Button
                 android:id="@+id/btnEditProfile"
-                android:layout_width="162dp"
-                android:layout_height="46dp"
+                android:layout_width="210dp"
+                android:layout_height="50dp"
                 android:background="#00FFFFFF"
                 android:drawableEnd="@drawable/forwardarrow"
                 android:textAlignment="textStart"
@@ -76,20 +75,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFavorites" />
+        app:layout_constraintTop_toBottomOf="@+id/space" />
 
     <Button
-        android:id="@+id/btnHome"
+        android:id="@+id/button4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
-        android:drawableStart="@drawable/homeicon"
+        android:drawableStart="@drawable/infoicon"
         android:drawableEnd="@drawable/forwardarrow"
         android:drawablePadding="10dp"
         android:fontFamily="@font/roboto"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="Home"
+        android:text="About"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -97,22 +96,75 @@
         app:layout_constraintTop_toBottomOf="@+id/btnExplore" />
 
     <Button
-        android:id="@+id/btnFavorites"
+        android:id="@+id/button6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
-        android:drawableStart="@drawable/rewardsicon"
+        android:drawableStart="@drawable/contacticon"
         android:drawableEnd="@drawable/forwardarrow"
         android:drawablePadding="10dp"
         android:fontFamily="@font/roboto"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="Rewards"
+        android:text="Contact"
         android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space" />
+        app:layout_constraintTop_toBottomOf="@+id/button5" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:drawableStart="@drawable/termsicon"
+        android:drawableEnd="@drawable/forwardarrow"
+        android:drawablePadding="10dp"
+        android:fontFamily="@font/roboto"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="Terms and Conditions"
+        android:textAlignment="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:drawableStart="@drawable/notificationicon"
+        android:drawableEnd="@drawable/forwardarrow"
+        android:drawablePadding="10dp"
+        android:fontFamily="@font/roboto"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="Notifications"
+        android:textAlignment="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button6" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#A4C2F4"
+        android:fontFamily="@font/roboto"
+        android:text="Logout"
+        android:textColor="#FFFEFE"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintVertical_bias="0.548" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
