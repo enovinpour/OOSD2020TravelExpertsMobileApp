@@ -34,6 +34,15 @@ public class Customer {
         this.password = password;
     }
 
+    public Customer(String custFirstName, String custLastName,String custBusPhone,
+                    String custEmail, String password) {
+        this.custFirstName = custFirstName;
+        this.custLastName = custLastName;
+        this.custBusPhone = custBusPhone;
+        this.custEmail = custEmail;
+        this.password = password;
+    }
+
     public int getCustId() {
         return custId;
     }
