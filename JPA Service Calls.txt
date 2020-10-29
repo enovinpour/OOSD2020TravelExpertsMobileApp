@@ -84,3 +84,28 @@
 
 				        return "Customer was updated";	
 					}
+					
+					
+					
+					
+					
+------- EHSANS STUFF
+
+	// http://localhost:8081/OOSDTravelExperts/rs/agent/getcc/123
+	@GET
+	@Path("/getcc/{ customerid }")
+	@Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+	public String getCustomer(@PathParam("customerid") int customerId)
+	{
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("OOSDTravelExperts");
+		EntityManager em = factory.createEntityManager();
+		
+		Query query = em.createQuery("Select c from Creditcard c where c.customerId=" + customerId);
+		List<Creditcard> list = query.getResultList();
+		
+		Gson gson = new Gson();
+	
+		Type type = new TypeToken<List<Creditcard>>() {}.getType();
+		
+		return gson.toJson(list,type);
+	}
