@@ -10,7 +10,7 @@ public class Package implements Serializable{
     private String PkgCurrencyType, PkgFamilyFriendly;
     private String PkgFoodIncluded, PkgHotelIncluded , PkgDesc, PkgLongDesc;
     private String PkgImageMap, PkgLocation, PkgImageHotel, PkgHotelDesc;
-    private String pkgFoodDesc;
+    private String pkgFoodDesc, pkgImageFood;
     private double PkgBasePrice, pkgAgencyCommission;
     private String pkgStartDate, pkgEndDate;
 
@@ -184,6 +184,14 @@ public class Package implements Serializable{
 
     public double getPkgAgencyCommission() {
         return pkgAgencyCommission;
+    }
+
+    public String getPkgImageFood() {
+        return pkgImageFood;
+    }
+
+    public void setPkgImageFood(String pkgImageFood) {
+        this.pkgImageFood = pkgImageFood;
     }
 
     public void setPkgAgencyCommission(double pkgAgencyCommission) {
