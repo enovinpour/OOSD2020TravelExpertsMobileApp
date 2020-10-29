@@ -177,3 +177,51 @@
 	        return "{ 'message':'Inserted' }";
 	    }
 		
+		
+		//Doug's calls 
+		//This is for the get package by Id
+		
+		// http://localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/getpackage/5
+		@GET
+		@Path("/getpackage/{ packageId }")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getPackage(@PathParam("packageId") int packageId)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Packagesalberta foundpackage = em.find(Packagesalberta.class, packageId);
+			
+			Gson gson = new Gson();
+			
+			em.close();
+			
+			return gson.toJson(foundpackage);
+		}
+		
+		//this is the call that gets all the packages
+		
+		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/getpackagelist
+		@GET
+		@Path("/getpackagelist")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getPackageList()
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Query query = em.createQuery("select p from Packagesalberta p");
+			List<Packagesalberta> list = query.getResultList();
+			JsonArray jsonAgentArray = new JsonArray();
+			for (int i=0; i<list.size(); i++)
+			{
+				Packagesalberta p = list.get(i);
+				JsonObject obj = new JsonObject();
+				obj.addProperty("PackageId", p.getPackageId());
+				obj.addProperty("PkgName", p.getPkgName());
+				obj.addProperty("PkgImageMain", p.getPkgImageMain());
+				jsonAgentArray.add(obj);
+			}
+			
+			return jsonAgentArray.toString();
+		}
