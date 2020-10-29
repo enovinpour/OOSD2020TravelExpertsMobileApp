@@ -45,11 +45,11 @@ import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
 public class LoginActivity extends AppCompatActivity {
 
     SharedPreferences pref;
-    Intent intent;
+    Intent intent, registerIntent;
     View view;
     EditText txt_email, txt_password;
     ImageView img_login;
-    Button btn_submit;
+    Button btn_submit, btn_linkregister;
     TextView lbl_email, lbl_password;
     RequestQueue requestQueue;
     String email;
@@ -67,9 +67,9 @@ public class LoginActivity extends AppCompatActivity {
         txt_email = findViewById(R.id.txt_email);
         txt_password = findViewById(R.id.txt_password);
         btn_submit = findViewById(R.id.btn_submit);
+        btn_linkregister = findViewById(R.id.btn_linkregister);
         lbl_email = findViewById(R.id.lbl_email);
         lbl_password = findViewById(R.id.lbl_password);
-
         img_login.setImageResource(R.drawable.icon_sleepyowl);
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +98,14 @@ public class LoginActivity extends AppCompatActivity {
                         Executors.newSingleThreadExecutor().execute(new getCustomer(email));
                     }
                 }
+            }
+        });
+
+        btn_linkregister.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
     }
@@ -135,8 +143,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         } else {
                             pkg = customerResponse.getJSONObject(0);
-//                            String emailfromUrl ="";
-//                            String passwordfromUrl = "";
                             idfromUrl = pkg.getInt("CustomerId");
                             emailfromUrl = pkg.getString("custEmail");
                             passwordfromUrl = pkg.getString("Password");
@@ -158,10 +164,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d("crystalpasswordtest" , customerPassword);
 
                                 if(email.equals(customerEmail)  && password.equals(customerPassword)){
-                                    // allows login
-//                                    if (pref.contains("email") && pref.contains("password")){
-//
-//                                    }
                                     SharedPreferences.Editor editor = pref.edit();
                                     editor.putInt("id", customerid);
                                     editor.commit();

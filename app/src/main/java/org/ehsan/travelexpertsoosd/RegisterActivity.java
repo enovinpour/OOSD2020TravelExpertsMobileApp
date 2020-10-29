@@ -2,19 +2,36 @@ package org.ehsan.travelexpertsoosd;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.Executors;
+
+import Model.Customer;
 
 import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
 import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
 
 public class RegisterActivity extends AppCompatActivity {
-
+    RequestQueue requestQueue;
     View view;
     EditText txt_firstName, txt_lastName, txt_initial, txt_custPhone, txt_email, txt_password;
     Button btn_submit;
@@ -24,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        requestQueue = Volley.newRequestQueue(this);
 
         txt_firstName = findViewById(R.id.txt_firstName);
         txt_initial = findViewById(R.id.txt_initial);
@@ -43,58 +61,106 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String firstName = txt_firstName.getText().toString();
-                String lastName = txt_lastName.getText().toString();
-                String initial = txt_initial.getText().toString();
-                String phone = txt_custPhone.getText().toString();
-                String email = txt_email.getText().toString();
-                String password = txt_password.getText().toString();
+                                          @Override
+                                          public void onClick(View v) {
+                                              String firstName = txt_firstName.getText().toString();
+                                              String lastName = txt_lastName.getText().toString();
+                                              String phone = txt_custPhone.getText().toString();
+                                              String email = txt_email.getText().toString();
+                                              String password = txt_password.getText().toString();
 
-                if (email.isEmpty()) { //checks if email is empty
-                    lbl_email.setText("Email *required field");
-                    lbl_email.setTextColor(Color.RED);
-                } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
-                    lbl_email.setText("Email * invalid email *");
-                    lbl_email.setTextColor(Color.RED);
-                } else {
-                    String validEmail = email;  //else, email is valid - pass it to new validEmail variable
-                }
+                                              if (email.isEmpty()) { //checks if email is empty                          //checks email
+                                                  lbl_email.setText("Email *required field");
+                                                  lbl_email.setTextColor(Color.RED);
+                                              } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /
+                                                  lbl_email.setText("Email * invalid email *");
+                                                  lbl_email.setTextColor(Color.RED);
+                                              } else if (password.isEmpty()) { //checks if password is empty  `           //check password
+                                                  lbl_password.setText("Password *required field *");
+                                                  lbl_password.setTextColor(Color.RED);
+                                              } else if (!isValidPassword(password)) { //checks if password is valid
+                                                  lbl_password.setText("Password * invalid password *");
+                                                  lbl_password.setTextColor(Color.RED);
+                                              } else if (firstName.isEmpty()) {                                           //check first name
+                                                  lbl_firstName.setText("First Name *required field *");
+                                                  lbl_firstName.setTextColor(Color.RED);
+                                              } else if (lastName.isEmpty()) {                                        //check last name
+                                                  lbl_lastName.setText("Last Name *required field *");
+                                                  lbl_lastName.setTextColor(Color.RED);
+                                              } else if (phone.isEmpty()) {                                           //check phone number
+                                                  lbl_phoneNumber.setText("Phone Number *required field *");
+                                                  lbl_phoneNumber.setTextColor(Color.RED);
+                                              } else {
+                                                  //everything is good!
+                                                  // Define customer object using text fields
+                                                  Customer customer = new Customer(
+                                                          firstName,
+                                                          lastName,
+                                                          phone,
+                                                          email,
+                                                          password
+                                                  );
+                                                    Log.d("customer crystal ", customer.getCustFirstName());
 
-                if (password.isEmpty()) { //checks if password is empty
-                    lbl_password.setText("Password *required field *");
-                    lbl_password.setTextColor(Color.RED);
-                } else if (!isValidPassword(password)) { //checks if password is valid
-                    lbl_password.setText("Password * invalid password *");
-                    lbl_password.setTextColor(Color.RED);
-                } else {  //this should only operate if the previous 2 if statements return true? (QUESTION THAT? )
-                    String validPassword = password; // else, password is valid - pass it to validPassword variable
-                }
+                                                  Executors.newSingleThreadExecutor().execute(new RegisterActivity.PutCustomer(customer));
 
-                if (firstName.isEmpty()) {
-                    lbl_firstName.setText("First Name *required field *");
-                    lbl_firstName.setTextColor(Color.RED);
-                } else {
-                    String validFName = firstName;
-                }
-                if (lastName.isEmpty()) {
-                    lbl_lastName.setText("Last Name *required field *");
-                    lbl_lastName.setTextColor(Color.RED);
-                } else {
-                    String validLName = lastName;
-                }
-                if (initial.isEmpty()) {
-                    lbl_initial.setText("Initial *required field *");
-                    lbl_initial.setTextColor(Color.RED);
-                } else {
-                    String validInitial = initial;
-                }
-                if (phone.isEmpty()) {
-                    lbl_phoneNumber.setText("Phone Number *required field *");
-                    lbl_phoneNumber.setTextColor(Color.RED);
-                }
-            }
+                                              }
+                                          }
         });
     }
+
+    class PutCustomer implements Runnable {
+        private Customer customer;
+
+        public PutCustomer(Customer customer) {
+            this.customer = customer;
+        }
+
+        @Override
+        public void run() {
+            //send JSON data to REST service
+            String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/";
+            JSONObject obj = new JSONObject();
+            try {
+//                obj.put("custId", customer.getCustId() + "");
+                obj.put("custFirstName", customer.getCustFirstName()+ "");
+                obj.put("custLastName", customer.getCustLastName() + "");
+                obj.put("custBusPhone", customer.getCustBusPhone() + "");
+                obj.put("custEmail", customer.getCustEmail() + "");
+                obj.put("Password", customer.getPassword() + ""); // name is case sensitive
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(final JSONObject response) {
+                            Log.d("crystal", "response=" + response);
+                            VolleyLog.wtf(response.toString(), "utf-8");
+
+                            //display result message
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("harv", "error=" + error);
+                            VolleyLog.wtf(error.getMessage(), "utf-8");
+                        }
+                    });
+
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
+
 }
