@@ -109,3 +109,71 @@
 		
 		return gson.toJson(list,type);
 	}
+
+
+
+----------------------------Crystal's stuff
+
+		//localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/loginId                       //GETS CUSTOMER INFORMATION BASED ON ID - I dont think we use this
+		@GET
+		@Path("/loginId/{id}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getAgentLoginEmail(@PathParam("id") int custId)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+//			Query query = em.createQuery("select c from Customer c where c.CustFirstName = "+ validEmail);
+			Customer foundcustomer = em.find(Customer.class, custId);
+			
+			Gson gson = new Gson();
+			em.close();
+			
+			return gson.toJson(foundcustomer);
+		}
+		
+		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/{validEmail}           // crystal - used for the login page
+		@GET
+		@Path("/LoginEmail/{custEmail}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getCustomerList(@PathParam("custEmail") String custEmail)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Query query = em.createQuery("select p from Customer p where p.custEmail = '" + custEmail + "'");
+			List<Customer> list = query.getResultList();
+			JsonArray jsonCustomerArray = new JsonArray();
+			for (int i=0; i<list.size(); i++)
+			{
+				Customer p = list.get(i);
+				JsonObject obj = new JsonObject();
+				obj.addProperty("CustomerId", p.getCustomerId());
+				obj.addProperty("custEmail", p.getCustEmail());
+				obj.addProperty("Password", p.getPassword());
+				jsonCustomerArray.add(obj);
+			}
+			
+			return jsonCustomerArray.toString();
+		}
+		
+		
+																											//crystal - used for the registration page
+		@PUT
+	    @Path("/putcustomer/")
+	    @Consumes(MediaType.APPLICATION_JSON)
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public String putAgent(String jsonString)
+	    {
+	        //localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/
+	        EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+	        EntityManager em = factory.createEntityManager();
+	        Gson gson = new Gson();
+	        Customer customer = gson.fromJson(jsonString, Customer.class);
+	        em.getTransaction().begin();
+	        em.persist(customer);
+	        em.getTransaction().commit();
+	        em.close();
+	        return "{ 'message':'Inserted' }";
+	    }
+		
