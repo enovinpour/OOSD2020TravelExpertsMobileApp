@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Model.CreditCard;
 import Model.Customer;
 
 import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
@@ -58,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = getSharedPreferences("user_details", MODE_PRIVATE);
-        intent = new Intent(LoginActivity.this, PackageSelectActivity.class);
+        intent = new Intent(LoginActivity.this, ProfileMainActivity.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -123,8 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
             //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
-            //String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/" + validEmail;
-            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/LoginEmail/" + validEmail; //For Ehsans Testing
+            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/LoginEmail/" + validEmail;
             Log.d("crystal", "Auth: " + url);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
