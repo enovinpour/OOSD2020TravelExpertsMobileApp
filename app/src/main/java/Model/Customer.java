@@ -1,7 +1,10 @@
 package Model;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
     private int custId;
+    private int agentId;
     private String custFirstName;
     private String custLastName;
     private String custAddress;
@@ -43,12 +46,39 @@ public class Customer {
         this.password = password;
     }
 
+    public Customer(int custId, String custFirstName, String custLastName, String custAddress, String custBusPhone, String custEmail) {
+        this.custId = custId;
+        this.custFirstName = custFirstName;
+        this.custLastName = custLastName;
+        this.custAddress = custAddress;
+        this.custBusPhone = custBusPhone;
+        this.custEmail = custEmail;
+    }
+
+    public Customer(int custId, int agentId, String custFirstName, String custLastName, String custAddress, String custBusPhone, String custEmail) {
+        this.custId = custId;
+        this.agentId = agentId;
+        this.custFirstName = custFirstName;
+        this.custLastName = custLastName;
+        this.custAddress = custAddress;
+        this.custBusPhone = custBusPhone;
+        this.custEmail = custEmail;
+    }
+
     public int getCustId() {
         return custId;
     }
 
     public void setCustId(int custId) {
         this.custId = custId;
+    }
+
+    public int getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
     }
 
     public String getCustFirstName() {
