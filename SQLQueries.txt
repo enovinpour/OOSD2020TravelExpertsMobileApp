@@ -81,6 +81,18 @@ This package is sure to provide you with a mountain fix.','1 night stay at the J
  'Banff Alberta and surrounding area','111.481690','50.759624');
 
 
+DELETE FROM `packages_products_suppliers` WHERE `packages_products_suppliers`.`PackageId` = 1;
+DELETE FROM `packages_products_suppliers` WHERE `packages_products_suppliers`.`PackageId` = 2;
+DELETE FROM `packages_products_suppliers` WHERE `packages_products_suppliers`.`PackageId` = 3;
+DELETE FROM `packages_products_suppliers` WHERE `packages_products_suppliers`.`PackageId` = 4;
+
+
+DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 1;
+DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 2;
+DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 3;
+DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 4;
+
+
 -- EHSANS SQL --
 INSERT INTO `creditcards`(`CCName`, `CCNumber`, `CCExpiry`, `CustomerId`) VALUES ('MC','5591320188599581','2021-06-10 00:00:00',145)
 
