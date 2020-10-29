@@ -84,3 +84,144 @@
 
 				        return "Customer was updated";	
 					}
+					
+					
+					
+					
+					
+------- EHSANS STUFF
+
+	// http://localhost:8081/OOSDTravelExperts/rs/agent/getcc/123
+	@GET
+	@Path("/getcc/{ customerid }")
+	@Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+	public String getCustomer(@PathParam("customerid") int customerId)
+	{
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("OOSDTravelExperts");
+		EntityManager em = factory.createEntityManager();
+		
+		Query query = em.createQuery("Select c from Creditcard c where c.customerId=" + customerId);
+		List<Creditcard> list = query.getResultList();
+		
+		Gson gson = new Gson();
+	
+		Type type = new TypeToken<List<Creditcard>>() {}.getType();
+		
+		return gson.toJson(list,type);
+	}
+
+
+
+----------------------------Crystal's stuff
+
+		//localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/loginId                       //GETS CUSTOMER INFORMATION BASED ON ID - I dont think we use this
+		@GET
+		@Path("/loginId/{id}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getAgentLoginEmail(@PathParam("id") int custId)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+//			Query query = em.createQuery("select c from Customer c where c.CustFirstName = "+ validEmail);
+			Customer foundcustomer = em.find(Customer.class, custId);
+			
+			Gson gson = new Gson();
+			em.close();
+			
+			return gson.toJson(foundcustomer);
+		}
+		
+		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/{validEmail}           // crystal - used for the login page
+		@GET
+		@Path("/LoginEmail/{custEmail}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getCustomerList(@PathParam("custEmail") String custEmail)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Query query = em.createQuery("select p from Customer p where p.custEmail = '" + custEmail + "'");
+			List<Customer> list = query.getResultList();
+			JsonArray jsonCustomerArray = new JsonArray();
+			for (int i=0; i<list.size(); i++)
+			{
+				Customer p = list.get(i);
+				JsonObject obj = new JsonObject();
+				obj.addProperty("CustomerId", p.getCustomerId());
+				obj.addProperty("custEmail", p.getCustEmail());
+				obj.addProperty("Password", p.getPassword());
+				jsonCustomerArray.add(obj);
+			}
+			
+			return jsonCustomerArray.toString();
+		}
+		
+		
+																											//crystal - used for the registration page
+		@PUT
+	    @Path("/putcustomer/")
+	    @Consumes(MediaType.APPLICATION_JSON)
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public String putAgent(String jsonString)
+	    {
+	        //localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/
+	        EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+	        EntityManager em = factory.createEntityManager();
+	        Gson gson = new Gson();
+	        Customer customer = gson.fromJson(jsonString, Customer.class);
+	        em.getTransaction().begin();
+	        em.persist(customer);
+	        em.getTransaction().commit();
+	        em.close();
+	        return "{ 'message':'Inserted' }";
+	    }
+		
+		
+		//Doug's calls 
+		//This is for the get package by Id
+		
+		// http://localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/getpackage/5
+		@GET
+		@Path("/getpackage/{ packageId }")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getPackage(@PathParam("packageId") int packageId)
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Packagesalberta foundpackage = em.find(Packagesalberta.class, packageId);
+			
+			Gson gson = new Gson();
+			
+			em.close();
+			
+			return gson.toJson(foundpackage);
+		}
+		
+		//this is the call that gets all the packages
+		
+		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/getpackagelist
+		@GET
+		@Path("/getpackagelist")
+		@Produces(MediaType.APPLICATION_JSON)
+		public String getPackageList()
+		{
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
+			EntityManager em = factory.createEntityManager();
+			
+			Query query = em.createQuery("select p from Packagesalberta p");
+			List<Packagesalberta> list = query.getResultList();
+			JsonArray jsonAgentArray = new JsonArray();
+			for (int i=0; i<list.size(); i++)
+			{
+				Packagesalberta p = list.get(i);
+				JsonObject obj = new JsonObject();
+				obj.addProperty("PackageId", p.getPackageId());
+				obj.addProperty("PkgName", p.getPkgName());
+				obj.addProperty("PkgImageMain", p.getPkgImageMain());
+				jsonAgentArray.add(obj);
+			}
+			
+			return jsonAgentArray.toString();
+		}
