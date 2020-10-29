@@ -24,7 +24,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.sql.Date;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
@@ -112,7 +114,8 @@ public class PackageBookActivity2 extends AppCompatActivity {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
             //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
-            String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
+//            String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackage/" + packageId; //For Ehsans Testing
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -123,7 +126,9 @@ public class PackageBookActivity2 extends AppCompatActivity {
                     JSONObject pkg = null;
                     try {
                         pkg = new JSONObject(response);
-                        checkoutPackage = new Package(pkg.getInt("packageId"),pkg.getString("pkgName"));
+                        checkoutPackage = new Package(pkg.getInt("packageId"),pkg.getString("pkgName"),
+                                pkg.getDouble("pkgBasePrice"), pkg.getString("pkgStartDate"), pkg.getString("pkgEndDate"),
+                                pkg.getDouble("pkgAgencyCommission"));
 
                     } catch (JSONException e) {
                         e.printStackTrace();

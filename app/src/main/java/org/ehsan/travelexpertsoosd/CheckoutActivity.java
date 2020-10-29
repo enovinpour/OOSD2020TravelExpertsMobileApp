@@ -7,22 +7,25 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
+import Model.Package;
+
 public class CheckoutActivity extends AppCompatActivity {
 
-    String city = "Banff";
-    Date tripStart = Calendar.getInstance().getTime();
-    Date tripEnd = Calendar.getInstance().getTime();
-    String pckge = "One of the packages";
-    int qty = 1;
-    double price = 230.00;
-    double GST;
-    double total;
+    private String packageName;
+    private String tripStart;
+    private String tripEnd;
+    private double price;
+    private double GST;
+    private double total;
+    private int qty;
+    private Package checkoutPackage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,25 +35,51 @@ public class CheckoutActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Checkout");
 
-        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getApplicationContext());
+        Intent intent = getIntent();
+        //this is the package that was passed from the PackageSelect activity
+        checkoutPackage = (Package) intent.getSerializableExtra("passedObject");
+
+        packageName = checkoutPackage.getPkgName();
+        tripStart = checkoutPackage.getPkgStartDate();
+        tripEnd = checkoutPackage.getPkgEndDate();
+
+//        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getApplicationContext());
 
         TextView tvCity = findViewById(R.id.tvCity);
         TextView tvTripDate = findViewById(R.id.tvTripDate);
         TextView tvPackage = findViewById(R.id.tvPackage);
-        TextView tvQuantity = findViewById(R.id.tvQuantity);
-        TextView tvPrice = findViewById(R.id.tvPrice);
-        TextView tvGST = findViewById(R.id.tvGST);
-        TextView tvTotal = findViewById(R.id.tvTotal);
-        Button btnPay = findViewById(R.id.btnPay);
+        final NumberPicker npQty = findViewById(R.id.npQty);
+        final TextView tvPrice = findViewById(R.id.tvPrice);
+        final TextView tvGST = findViewById(R.id.tvGST);
+        final TextView tvTotal = findViewById(R.id.tvTotal);
+        final Button btnPay = findViewById(R.id.btnPay);
 
-        String tripDate = dateFormat.format(tripStart) + " - " + dateFormat.format(tripEnd);
+        String tripDate = tripStart + " - " + tripEnd;
+        price = checkoutPackage.getPkgBasePrice() + checkoutPackage.getPkgAgencyCommission();
         GST = price * 0.05;
         total = price + GST;
+        qty = npQty.getValue();
 
-        tvCity.setText(city);
+        npQty.setMaxValue(4);
+        npQty.setMinValue(1);
+
+        npQty.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                qty = npQty.getValue();
+                price = (checkoutPackage.getPkgBasePrice() + checkoutPackage.getPkgAgencyCommission()) * qty;
+                GST = price * 0.05;
+                total = price + GST;
+
+                tvPrice.setText("$" + String.valueOf(price));
+                tvGST.setText("$" + String.valueOf(GST));
+                tvTotal.setText("$" + String.valueOf(total));
+            }
+        });
+
+        tvCity.setText(packageName);
         tvTripDate.setText(tripDate);
-        tvPackage.setText(pckge);
-        tvQuantity.setText(String.valueOf(qty));
+        tvPackage.setText("pckge");
         tvPrice.setText("$" + String.valueOf(price));
         tvGST.setText("$" + String.valueOf(GST));
         tvTotal.setText("$" + String.valueOf(total));
@@ -59,7 +88,8 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);
-                //lvPictures.setAdapter(adapter);
+                intent.putExtra("Total", total);
+                intent.putExtra("passedObject", checkoutPackage);
                 startActivity(intent);
             }
         });

@@ -20,7 +20,6 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LandingActivity" />
         <activity android:name=".RewardsActivity"></activity>
-        <activity android:name=".ProfileMainActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity
             android:name=".CreditCardActivity"

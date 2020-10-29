@@ -1,5 +1,7 @@
 package org.ehsan.travelexpertsoosd;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.android.volley.Request;
@@ -13,6 +15,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,7 +38,9 @@ public class CreditCardActivity extends AppCompatActivity {
     Button btnPayment;
     RequestQueue requestQueue;
     Customer customer;
-
+    SharedPreferences pref;
+    int id;
+    double price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +51,14 @@ public class CreditCardActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle("Credit Card");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Intent intent = getIntent();
+        price = intent.getDoubleExtra("Total",0);
 
         requestQueue = Volley.newRequestQueue(this);
+        pref = getSharedPreferences("user_details",MODE_PRIVATE);
+
+        id = pref.getInt("id", 1);
 
         tvPrice = findViewById(R.id.tvPrice);
         etCardNumber = findViewById(R.id.etCardNumber);
@@ -63,32 +75,74 @@ public class CreditCardActivity extends AppCompatActivity {
         btnPayment = findViewById(R.id.btnPayment);
         etPhone = findViewById(R.id.etPhone);
 
-        int Price = 500;
-        customer = new Customer(1, "Ehsan","Novin","102 Wakanda"
-        ,"Calgary","AB","T2T-1Z0","Country","40311123332"
-        ,"40311332211","enovin@test.com",100,"password");
+        Executors.newSingleThreadExecutor().execute(new GetCustomer());
 
-        Executors.newSingleThreadExecutor().execute(new GetCredit());
+//        Executors.newSingleThreadExecutor().execute(new GetCredit());
 
-        tvPrice.setText("$" + Price);
-        etFirstName.setText(customer.getCustFirstName());
-        etLastName.setText(customer.getCustLastName());
-        etAddress1.setText(customer.getCustAddress());
-        etPostal.setText(customer.getCustPostal());
-        etCity.setText(customer.getCustCity());
-        etCountry.setText(customer.getCustCountry());
-        etPhone.setText(customer.getCustBusPhone());
+        tvPrice.setText("$" + price);
 
+        //Needs to be done tomorrow
+        btnPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
 
     }
 
-    class GetCredit implements Runnable {
+    class GetCustomer implements Runnable {
         @Override
         public void run() {
-
             StringBuffer buffer = new StringBuffer();
-            String url = "http://192.168.0.12:8081/JSPDay4JPA2/rs/agent/getcc/123";
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/loginId/" + id;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    VolleyLog.wtf(response,"utf-8");
+
+                    try {
+//                        JSONArray jsonArray = new JSONArray(response);
+//                        JSONObject object = jsonArray.getJSONObject(0);
+
+                        JSONObject object = new JSONObject(response);
+                        Log.d("ehsan", "onResponse: " + object);
+
+                        customer = new Customer(object.getInt("customerId"), object.getString("custFirstName"),
+                                object.getString("custLastName"),object.getString("custAddress"), object.getString("custCity"),
+                                object.getString("custProv"), object.getString("custPostal"), object.getString("custCountry"),
+                                object.getString("custHomePhone"), object.getString("custBusPhone"), object.getString("custEmail"),
+                                object.getInt("points"), object.getString("password"));
+
+                        etFirstName.setText(customer.getCustFirstName());
+                        etLastName.setText(customer.getCustLastName());
+                        etAddress1.setText(customer.getCustAddress());
+                        etPostal.setText(customer.getCustPostal());
+                        etCity.setText(customer.getCustCity());
+                        etCountry.setText(customer.getCustCountry());
+                        etPhone.setText(customer.getCustBusPhone());
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.wtf(error.getMessage(), "utf-8");
+                }
+            });
+
+            requestQueue.add(stringRequest);
+
+
+            // Credit Card
+
+            buffer = new StringBuffer();
+            url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/" + id;
+            stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     VolleyLog.wtf(response,"utf-8");
@@ -118,6 +172,46 @@ public class CreditCardActivity extends AppCompatActivity {
             });
 
             requestQueue.add(stringRequest);
+
         }
     }
+
+//    class GetCredit implements Runnable {
+//        @Override
+//        public void run() {
+//
+//            StringBuffer buffer = new StringBuffer();
+//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/" + id;
+//            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String response) {
+//                    VolleyLog.wtf(response,"utf-8");
+//
+//                    try{
+//
+//                        JSONArray jsonArray = new JSONArray(response);
+//                        JSONObject object = jsonArray.getJSONObject(0);
+//                        CreditCard cc = new CreditCard(object.getInt("creditCardId"),
+//                                object.getString("CCName"), object.getString("CCNumber"),
+//                                object.getString("CCExpiry"),object.getInt("customerId"));
+//
+//                        etCardName.setText(customer.getCustFirstName() + " " + customer.getCustLastName());
+//                        etCardNumber.setText(cc.getCcNumber());
+//                        etExpiry.setText(cc.getCcExpiry());
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    VolleyLog.wtf(error.getMessage(), "utf-8");
+//                }
+//            });
+//
+//            requestQueue.add(stringRequest);
+//        }
+//    }
 }
