@@ -9,12 +9,11 @@
         android:id="@+id/btn_submit"
         android:layout_width="256dp"
         android:layout_height="41dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#a4c2f4"
         android:letterSpacing=".5"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_password" />
 
@@ -34,7 +33,7 @@
         android:id="@+id/lbl_register"
         android:layout_width="144dp"
         android:layout_height="38dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="60dp"
         android:fontFamily="@font/roboto"
         android:letterSpacing=".2"
         android:text="Login"
@@ -48,11 +47,11 @@
         android:id="@+id/txt_email"
         android:layout_width="254dp"
         android:layout_height="38dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginTop="260dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbl_register" />
 
@@ -65,19 +64,20 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/txt_email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.259"
+        app:layout_constraintHorizontal_bias="0.213"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_login" />
+        app:layout_constraintTop_toBottomOf="@+id/img_login"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/txt_password"
         android:layout_width="253dp"
         android:layout_height="38dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_email" />
 
@@ -90,18 +90,18 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/txt_password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.277"
+        app:layout_constraintHorizontal_bias="0.239"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_email"
-        app:layout_constraintVertical_bias="0.932" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/img_login"
         android:layout_width="183dp"
         android:layout_height="170dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbl_register"
         tools:srcCompat="@drawable/icon_sleepyowl" />
@@ -110,6 +110,7 @@
         android:id="@+id/btn_linkregister"
         android:layout_width="113dp"
         android:layout_height="39dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="104dp"
         android:backgroundTint="#a4c2f4"
         android:text="Register here"

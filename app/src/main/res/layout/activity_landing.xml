@@ -20,41 +20,41 @@
 
     <Button
         android:id="@+id/btn_startnow"
-        android:layout_width="185dp"
-        android:layout_height="64dp"
+        android:layout_width="158dp"
+        android:layout_height="53dp"
         android:backgroundTint="#a4c2f4"
         android:text="start now "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.185"
+        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.88" />
+        app:layout_constraintVertical_bias="0.905" />
 
     <TextView
         android:id="@+id/lbl_slogan"
-        android:layout_width="305dp"
-        android:layout_height="92dp"
+        android:layout_width="242dp"
+        android:layout_height="58dp"
         android:text="Explore Alberta "
         android:textColor="@color/LightBlue"
-        android:textSize="44sp"
+        android:textSize="35sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_startnow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.434" />
+        app:layout_constraintVertical_bias="0.366" />
 
     <ImageView
         android:id="@+id/img_logo"
-        android:layout_width="150dp"
-        android:layout_height="140dp"
+        android:layout_width="128dp"
+        android:layout_height="124dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/lbl_slogan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.676"
+        app:layout_constraintVertical_bias="0.493"
         app:srcCompat="@drawable/expertlogo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
