@@ -35,13 +35,14 @@ import Model.Package;
 public class PackageBookActivity2 extends AppCompatActivity {
 
     Package checkoutPackage;
-    ImageView ivPackageBook, ivPackageMap, ivHotel;
+    ImageView ivPackageBook, ivPackageMap, ivHotel, ivFood;
     ImageButton imgBtnBack;
     TextView tvPackageBookPgkName, tvPackageCostDesc, tvCost, tvFamilyFriendly, tvFoodIncluded, tvAbout;
-    TextView tvLongDesc, tvLocation, tvCostFinal, tvHotelDetails;
+    TextView tvLongDesc, tvLocation, tvCostFinal, tvHotelDetails, tvFoodDetails;
     RequestQueue requestQueue;
     Package listViewPackage;
     CardView cvHotel;
+    CardView cvFood;
     Button btnBookNow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +61,14 @@ public class PackageBookActivity2 extends AppCompatActivity {
         tvLocation = findViewById(R.id.tvLocation);
         tvCostFinal = findViewById(R.id.tvCostFinal);
         ivHotel = findViewById(R.id.ivHotel);
+        ivFood = findViewById(R.id.ivFood);
         cvHotel = findViewById(R.id.cvHotel);
         cvHotel.setVisibility(View.GONE);
+        cvFood = findViewById(R.id.cvFood);
+        cvFood.setVisibility(View.GONE);
         btnBookNow = findViewById(R.id.btnBookNow);
         tvHotelDetails = findViewById(R.id.tvHotelDetails);
+        tvFoodDetails = findViewById(R.id.tvFoodDetails);
 
         Intent intent = getIntent();
         //this is the package that was passed from the PackageSelect activity
@@ -114,8 +119,8 @@ public class PackageBookActivity2 extends AppCompatActivity {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
             //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
-//            String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
-            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackage/" + packageId; //For Ehsans Testing
+           String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
+           // String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackage/" + packageId; //For Ehsans Testing
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -164,17 +169,24 @@ public class PackageBookActivity2 extends AppCompatActivity {
                                 tvCostFinal.setText(finalPkg.getString("pkgCurrencyType") + " " +  currencyNumber  );
 
                                 String imageHotel = finalPkg.getString("pkgImageHotel");
-
                                 //Log.d("doug", "RESOURCE: " + imageHotel);
                                 int imageHotelId = getResources().getIdentifier(imageHotel, "drawable", getPackageName());
                                 //Log.d("doug", "RESOURCE: " + imageHotelId);
-
                                 if (imageHotelId != 0) {
                                     cvHotel.setVisibility(View.VISIBLE);
                                     ivHotel.setImageResource(imageHotelId);
                                     tvHotelDetails.setText(finalPkg.getString("pkgHotelDesc"));
                                 }
 
+                                String imageFood = finalPkg.getString("pkgImageFood");
+                                //Log.d("doug", "RESOURCE: " + imageHotel);
+                                int imageFoodId = getResources().getIdentifier(imageHotel, "drawable", getPackageName());
+                                //Log.d("doug", "RESOURCE: " + imageHotelId);
+                                if (imageFoodId != 0) {
+                                    cvFood.setVisibility(View.VISIBLE);
+                                    ivFood.setImageResource(imageHotelId);
+                                    tvFoodDetails.setText(finalPkg.getString("pkgFoodDesc"));
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
