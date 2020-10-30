@@ -94,7 +94,7 @@ public class CreditCardActivity extends AppCompatActivity {
         @Override
         public void run() {
             StringBuffer buffer = new StringBuffer();
-            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/loginId/" + id;
+            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/loginId/" + id;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -141,7 +141,7 @@ public class CreditCardActivity extends AppCompatActivity {
             // Credit Card
 
             buffer = new StringBuffer();
-            url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/" + id;
+            url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcc/" + id;
             stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
