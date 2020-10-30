@@ -107,7 +107,7 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Customer customer = new Customer(
                         custId, firstName, lastName, address, city, prov, postal, country, homePhone, phone, email, agentId, custPassword
                 );
-                if (email.isEmpty() || firstName.isEmpty() || firstName.isEmpty()) { //checks if email is empty
+                if (email.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) { //checks if email is empty
 //                    lblEmail.setTextColor(Color.RED);
 //                    lblFirstName.setTextColor(Color.RED);
 //                    lblLastName.setTextColor(Color.RED);
