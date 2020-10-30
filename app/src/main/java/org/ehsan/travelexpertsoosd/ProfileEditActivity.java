@@ -2,14 +2,18 @@ package org.ehsan.travelexpertsoosd;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,15 +33,25 @@ import java.util.concurrent.Executors;
 
 import Model.Customer;
 
+import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
+import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
+
 public class ProfileEditActivity extends AppCompatActivity {
     Button btnSave;
     ImageButton btnEditBack;
+    TextView txtValidator, lblFirstName, lblLastName, lblEmail, lblPhone, lblAddress;
     EditText txtFirstName, txtLastName, txtUserEmail, txtUserPhone, txtUserAddress;
     RequestQueue requestQueue;
     SharedPreferences prf;
     Customer customer;
     int agentId = 1;
     int custId;
+    String custCity = "";
+    String custProv = "";
+    String custPostal = "";
+    String custCountry = "";
+    String custHomePhone = "";
+    String custPassword = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +70,12 @@ public class ProfileEditActivity extends AppCompatActivity {
         txtUserEmail = findViewById(R.id.txtUserEmail);
         txtUserPhone = findViewById(R.id.txtUserPhone);
         txtUserAddress = findViewById(R.id.txtUserAddress);
+        txtValidator = findViewById(R.id.txtValidator);
+        lblFirstName = findViewById(R.id.lblFirstName);
+        lblLastName = findViewById(R.id.lblLastName);
+        lblPhone = findViewById(R.id.lblPhone);
+        lblAddress = findViewById(R.id.lblAddress);
+        lblEmail = findViewById(R.id.lblEmail);
         btnEditBack = findViewById(R.id.btnEditBack);
         btnEditBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,22 +93,34 @@ public class ProfileEditActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String firstName = txtFirstName.getText().toString();
                 String lastName = txtLastName.getText().toString();
-                String email = txtUserEmail.getText().toString();
-                String phone = txtUserPhone.getText().toString();
                 String address = txtUserAddress.getText().toString();
+                String city = custCity;
+                String prov = custProv;
+                String postal = custPostal;
+                String country = custCountry;
+                String homePhone = custHomePhone;
+                String phone = txtUserPhone.getText().toString();
+                String email = txtUserEmail.getText().toString();
                 Customer customer = new Customer(
-                        custId,
-                        agentId,
-                        firstName,
-                        lastName,
-                        email,
-                        phone,
-                        address
+                        custId, firstName, lastName, address, city, prov, postal, country, homePhone, phone, email, agentId, custPassword
                 );
-                Executors.newSingleThreadExecutor().execute(new PostCustomer(customer));
-                Log.d("jessy", customer.getCustFirstName());
+                if (email.isEmpty() || firstName.isEmpty() || firstName.isEmpty()) { //checks if email is empty
+//                    lblEmail.setTextColor(Color.RED);
+//                    lblFirstName.setTextColor(Color.RED);
+//                    lblLastName.setTextColor(Color.RED);
+                    txtValidator.setText("Please fill in all required fields *");
+                } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
+                    lblEmail.setText("Email * invalid email *");
+                    lblEmail.setTextColor(Color.RED);
+                } else
+                {
+                    //else, all fields are valid
+                    Executors.newSingleThreadExecutor().execute(new PostCustomer(customer));
+                }
+
             }
         });
     }
@@ -111,12 +143,22 @@ public class ProfileEditActivity extends AppCompatActivity {
                         JSONObject object = jsonArray.getJSONObject(0);
                         Customer cust = new Customer(
                                     object.getInt("CustomerId"), object.getString("CustFirstName"), object.getString("CustLastName"),
-                                    object.getString("CustAddress"), object.getString("CustBusPhone"), object.getString("CustEmail"));
+                                    object.getString("CustAddress"), object.getString("CustCity"), object.getString("CustProv"),
+                                    object.getString("CustPostal"), object.getString("CustCountry"), object.getString("CustHomePhone"),
+                                    object.getString("CustBusPhone"), object.getString("CustEmail"), object.getInt("AgentId"), object.getString("Password"));
+                        custId = cust.getCustId();
                         txtFirstName.setText(cust.getCustFirstName());
                         txtLastName.setText(cust.getCustLastName());
-                        txtUserEmail.setText(cust.getCustEmail());
-                        txtUserPhone.setText(cust.getCustBusPhone());
                         txtUserAddress.setText(cust.getCustAddress());
+                        custCity = cust.getCustCity();
+                        custProv = cust.getCustProv();
+                        custPostal = cust.getCustPostal();
+                        custCountry = cust.getCustCountry();
+                        custHomePhone = cust.getCustHomePhone();
+                        txtUserPhone.setText(cust.getCustBusPhone());
+                        txtUserEmail.setText(cust.getCustEmail());
+                        agentId = cust.getAgentId();
+                        custPassword = cust.getPassword();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -145,13 +187,21 @@ public class ProfileEditActivity extends AppCompatActivity {
             String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/postcustomer/";
             JSONObject obj = new JSONObject();
             try {
-                obj.put("custId", custId);
-                obj.put("agentId", customer.getAgentId() + "");
+                obj.put("customerId", customer.getCustId());
                 obj.put("custFirstName", customer.getCustFirstName()+ "");
                 obj.put("custLastName", customer.getCustLastName() + "");
+                obj.put("custAddress", customer.getCustAddress() + "");
+                obj.put("custCity", customer.getCustCity() + "");
+                obj.put("custProv", customer.getCustProv() + "");
+                obj.put("custPostal", customer.getCustPostal() + "");
+                obj.put("custCountry", customer.getCustCountry() + "");
+                obj.put("custHomePhone", customer.getCustHomePhone() + "");
                 obj.put("custBusPhone", customer.getCustBusPhone() + "");
                 obj.put("custEmail", customer.getCustEmail() + "");
-                obj.put("custAddress", customer.getCustAddress() + "");
+                obj.put("agentId", customer.getAgentId());
+                obj.put("password", customer.getPassword());
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -182,6 +232,10 @@ public class ProfileEditActivity extends AppCompatActivity {
                         }
                     });
             requestQueue.add(jsonObjectRequest);
+            Intent intentProfileMain = new Intent(ProfileEditActivity.this, ProfileMainActivity.class);
+            finish();
+//                intentProfileMain.getSerializableExtra("customer");
+            startActivity(intentProfileMain);
         }
     }
 }

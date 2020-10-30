@@ -1,5 +1,6 @@
 package org.ehsan.travelexpertsoosd;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -57,6 +58,7 @@ public class ProfileMainActivity extends AppCompatActivity {
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 startActivity(intentEdit);
             }
         });
@@ -80,6 +82,15 @@ public class ProfileMainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestQueue = Volley.newRequestQueue(this);
+        Intent intent = getIntent();
+        customer = (Customer) intent.getSerializableExtra("customer");
+        Executors.newSingleThreadExecutor().execute(new ProfileMainActivity.GetCustomer());
+    }
+
     class GetCustomer implements Runnable {
         @Override
         public void run() {
@@ -97,7 +108,7 @@ public class ProfileMainActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response);
                         JSONObject object = jsonArray.getJSONObject(0);
                         Customer cust = new Customer(object.getInt("CustomerId"), object.getString("CustFirstName"),
-                                object.getString("CustLastName"), object.getString("CustAddress"), object.getString("CustBusPhone"), object.getString("CustEmail"));
+                                object.getString("CustLastName"));
                         btnEditProfile.setText(cust.getCustFirstName() + " " + cust.getCustLastName());
 
                     } catch (JSONException e) {
