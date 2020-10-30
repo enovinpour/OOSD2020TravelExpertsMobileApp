@@ -9,11 +9,12 @@
         android:id="@+id/btn_submit"
         android:layout_width="256dp"
         android:layout_height="41dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="#a4c2f4"
         android:letterSpacing=".5"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_password" />
 
@@ -21,7 +22,7 @@
         android:id="@+id/txt_registerQ"
         android:layout_width="167dp"
         android:layout_height="18dp"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/roboto"
         android:text="don't have an account?"
@@ -29,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_submit"
-        app:layout_constraintVertical_bias="0.164" />
+        app:layout_constraintVertical_bias="0.025" />
 
     <TextView
         android:id="@+id/lbl_register"
@@ -49,11 +50,11 @@
         android:id="@+id/txt_email"
         android:layout_width="254dp"
         android:layout_height="38dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbl_email" />
 
@@ -74,11 +75,11 @@
         android:id="@+id/txt_password"
         android:layout_width="253dp"
         android:layout_height="38dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbl_password" />
 
@@ -110,16 +111,15 @@
         android:id="@+id/btn_linkregister"
         android:layout_width="113dp"
         android:layout_height="39dp"
-        android:layout_marginTop="30dp"
         android:layout_marginBottom="104dp"
         android:backgroundTint="#a4c2f4"
         android:text="Register here"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_registerQ"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txt_registerQ"
-        app:layout_constraintTop_toBottomOf="@+id/btn_submit"
-        app:layout_constraintVertical_bias="0.167" />
+        app:layout_constraintTop_toTopOf="@+id/txt_registerQ"
+        app:layout_constraintVertical_bias="0.08" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
