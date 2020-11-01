@@ -2,7 +2,7 @@ package org.ehsan.travelexpertsoosd;
 
 /*
 Author: Jessy Perreault
-Class Name: CPRG-220-A-Open-Source-Web-Apps
+Class Name: PROJ-207-OOS
 Date: November 2020
  */
 
