@@ -1,5 +1,11 @@
 package org.ehsan.travelexpertsoosd;
 
+/*
+Author: Jessy Perreault
+Class Name: PROJ-207-OOS
+Date: November 2020
+ */
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 

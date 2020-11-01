@@ -1,5 +1,9 @@
 package Model;
-
+/*
+Author: Jessy Perreault
+Class Name: PROJ-207-OOS
+Date: November 2020
+ */
 import java.io.Serializable;
 
 public class Reward implements Serializable {
@@ -68,10 +72,4 @@ public class Reward implements Serializable {
         CustomerId = customerId;
     }
 
-    @Override
-    public String toString() {
-        return "Reward Name: " + RwdName
-                + "\n Reward Description: " + RwdDescription
-                + "\n Points Cost: " + PointsCost;
-    }
 }
