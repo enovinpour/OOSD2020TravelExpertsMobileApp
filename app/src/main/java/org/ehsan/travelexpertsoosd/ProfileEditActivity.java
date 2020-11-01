@@ -1,5 +1,11 @@
 package org.ehsan.travelexpertsoosd;
 
+/*
+Author: Jessy Perreault
+Class Name: CPRG-220-A-Open-Source-Web-Apps
+Date: November 2020
+ */
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;

@@ -1,5 +1,9 @@
 package Model;
-
+/*
+Author: Jessy Perreault
+Class Name: CPRG-220-A-Open-Source-Web-Apps
+Date: November 2020
+ */
 import java.io.Serializable;
 
 public class Reward implements Serializable {
