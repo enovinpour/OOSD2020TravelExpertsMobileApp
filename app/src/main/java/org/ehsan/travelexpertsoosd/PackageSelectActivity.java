@@ -1,3 +1,11 @@
+/*
+ * Threaded Project Term 3 Workspace Workshop 8
+ * Purpose: This is the code behind for the activity that displays
+ * a list of travel packages in a listview
+ * Author: Group 2 - Doug Cameron primary developer of this page
+ * Date: Oct, 2020
+ */
+
 package org.ehsan.travelexpertsoosd;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,38 +42,40 @@ import Model.Package;
 
 public class PackageSelectActivity extends AppCompatActivity {
 
+    //define the controls for the page
     ListView lvPackageSelect;
     ArrayList<Package> imagesList;
     RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_select);
+
+
         requestQueue = Volley.newRequestQueue(this);
         lvPackageSelect = findViewById(R.id.lvPackageSelect);
-        /*String [] from = { "imgName" };
-        int [] to = {R.id.ivPackagePicDisplay};
-        SimpleAdapter adapter = new SimpleAdapter(this, loadData(),R.layout.package_pic_display, from, to);
 
-        lvPackageSelect.setAdapter(adapter);*/
-
+        //execute the GetPackages class
         Executors.newSingleThreadExecutor().execute(new GetPackages());
+
+        //define a click event on the listview of packages
         lvPackageSelect.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Package packageNew = (Package) lvPackageSelect.getAdapter().getItem(position);
+                //define an intent to start the next tab which will display the package information
                 Intent intent = new Intent(getApplicationContext(), PackageBookActivity2.class);
-                //Package packageNew = imagesList.get(position);
-                intent.putExtra("packagePassed", packageNew);
-                //int newResID = item.getPkgImageMain();
-                //intent.putExtra("imageNew",newResID);
+
+                intent.putExtra("packagePassed", packageNew);//pass a package object to the intent
                 startActivity(intent);
             }
         });
     }
 
-/*    private ArrayList loadData() {
+/* This was test code where I was trying to display the images on the listview instead of the toString text
+private ArrayList loadData() {
 
         //create some courses to display in the listview
         String pictureName1 = "drumheller";
@@ -96,12 +106,14 @@ public class PackageSelectActivity extends AppCompatActivity {
     }*/
 
 //this class reads the data from database and displays
-//the package tostring
+//the package tostring in a list view
     class GetPackages implements Runnable {
     @Override
     public void run() {
         //retrieve JSON data from REST service into StringBuffer
         StringBuffer buffer = new StringBuffer();
+
+        //preform the service calls to the webservice
         //String url = "http://192.168.0.23:8082/JSPDay4RESTJPAExample/rs/agent/getagentlist";
        String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getpackagelist";
         //String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackagelist"; //For Ehsans Testing
@@ -113,13 +125,15 @@ public class PackageSelectActivity extends AppCompatActivity {
 
                 //convert JSON data from response string into an ArrayAdapter of Agents
                 ArrayAdapter<Package> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
-                //ArrayAdapter<Package> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
+
+                //loop through JSON array
                 try {
-                    JSONArray jsonArray = new JSONArray(response);
+                    JSONArray jsonArray = new JSONArray(response);//create a new json array
                     for (int i=0; i<jsonArray.length(); i++)
                     {
-                        JSONObject pkg = jsonArray.getJSONObject(i);
+                        JSONObject pkg = jsonArray.getJSONObject(i);//set a new json array called pkg
 
+                        //create a new package to pass to the next tab PackageBookActivity
                         Package aPackage = new Package(pkg.getInt("PackageId"), pkg.getString("PkgName")                                  );
                         adapter.add(aPackage);
                     }
@@ -127,7 +141,7 @@ public class PackageSelectActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                //update ListView with the adapter of Agents
+                //update ListView with the adapter of packages
                 final ArrayAdapter<Package> finalAdapter = adapter;
                 runOnUiThread(new Runnable() {
                     @Override

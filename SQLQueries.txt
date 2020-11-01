@@ -93,6 +93,7 @@ DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 3;
 DELETE FROM `packagesalberta` WHERE `packagesalberta`.`PackageId` = 4;
 
 
+
 -- EHSANS SQL --
 INSERT INTO `creditcards`(`CCName`, `CCNumber`, `CCExpiry`, `CustomerId`) VALUES ('MC','5591320188599581','2021-06-10 00:00:00',145)
 
