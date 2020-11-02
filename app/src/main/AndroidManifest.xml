@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Authors: Sean Burman, Douglas Cameron, Crystal Champion, Ehsan Novin-Pour, Jessy Perreault
+    Class Name: PROJ-207-OOS-Threaded-Project
+    Date: November 2020
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.ehsan.travelexpertsoosd">
 
@@ -19,7 +24,6 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LandingActivity" />
-        <activity android:name=".RewardsActivity"></activity>
         <activity android:name=".ProfileEditActivity" />
         <activity
             android:name=".CreditCardActivity"

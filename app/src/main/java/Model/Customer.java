@@ -1,9 +1,12 @@
 package Model;
+/*
+Author: Crystal Champion
+Class Name: PROJ-207-OOS
+Date: November 2020
+Contributors: Jessy Perreault
+ */
 
 import java.io.Serializable;
-
-
-//Author : Crystal Champion , Jessy Perreault
 
 public class Customer implements Serializable {
     private int custId;
@@ -21,7 +24,7 @@ public class Customer implements Serializable {
     private int points;
     private String password;
 
-    //Constructor needed for ProfileEditActivity : Jessy Perreault
+    //Constructor needed for ProfileEditActivity
     public Customer(int custId, String custFirstName, String custLastName, String custAddress, String custCity, String custProv, String custPostal, String custCountry, String custHomePhone, String custBusPhone, String custEmail, int agentId, String password) {
         this.custId = custId;
         this.custFirstName = custFirstName;
@@ -38,14 +41,14 @@ public class Customer implements Serializable {
         this.password = password;
     }
 
-    //Constructor needed for ProfileMainActivity : Jessy Perreault
+    //Constructor needed for ProfileMainActivity
     public Customer(int custId, String custFirstName, String custLastName) {
         this.custId = custId;
         this.custFirstName = custFirstName;
         this.custLastName = custLastName;
     }
 
-    //Constructor needed for Register page  : Crystal Champion
+    //Constructor needed for Register page
         public Customer(String custFirstName, String custLastName, String custBusPhone,
                     String custEmail, String password) {
         this.custFirstName = custFirstName;
@@ -54,6 +57,7 @@ public class Customer implements Serializable {
         this.custEmail = custEmail;
         this.password = password;
     }
+
 
     public int getCustId() {
         return custId;

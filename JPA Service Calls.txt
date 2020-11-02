@@ -1,6 +1,9 @@
 //Jessy's Customer Stuff
+//Author: Jessy Perreault
+//Course Name: PROJ-207-OOS-Threaded-Project
+//Date: November 2020
 
-// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomers
+// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomers
 					@GET
 					@Path("/getcustomers")
 					@Produces(MediaType.APPLICATION_JSON)
@@ -18,7 +21,7 @@
 						return gson.toJson(list, type);
 					}
 					
-////				// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomer/
+////				// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomer/
 					@GET
 					@Path("/getcustomer/{customerId}")
 					@Produces(MediaType.APPLICATION_JSON)
@@ -36,7 +39,8 @@
 						return gson.toJson(foundCustomer);
 					}
 					
-					// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist 
+					// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomerlist
+					//sends back customer id, firstname, lastname to populate a dropdown list 
 					@GET
 					@Path("/getcustomerlist/{ id }")
 					@Produces(MediaType.APPLICATION_JSON)
@@ -55,16 +59,23 @@
 							obj.addProperty("CustomerId", c.getCustomerId());
 							obj.addProperty("CustFirstName", c.getCustFirstName());
 							obj.addProperty("CustLastName", c.getCustLastName());
-							obj.addProperty("CustEmail", c.getCustEmail());
-							obj.addProperty("CustBusPhone", c.getCustBusPhone());
 							obj.addProperty("CustAddress", c.getCustAddress());
+							obj.addProperty("CustCity", c.getCustCity());
+							obj.addProperty("CustProv", c.getCustProv());
+							obj.addProperty("CustPostal", c.getCustPostal());
+							obj.addProperty("CustCountry", c.getCustCountry());
+							obj.addProperty("CustHomePhone", c.getCustHomePhone());
+							obj.addProperty("CustBusPhone", c.getCustBusPhone());
+							obj.addProperty("CustEmail", c.getCustEmail());
+							obj.addProperty("AgentId", c.getAgentId());
+							obj.addProperty("Password", c.getPassword());
 							jsonCustomerArray.add(obj);
 						}
 						
 						return jsonCustomerArray.toString();
 					}
-          
-          @POST
+					
+					@POST
 					@Path("/postcustomer/")
 				    @Produces(MediaType.TEXT_PLAIN)
 					@Consumes(MediaType.APPLICATION_JSON)
@@ -72,17 +83,17 @@
 						EntityManagerFactory factory 
 							= Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP2");
 						EntityManager em = factory.createEntityManager();
-						
 						Gson gson = new Gson();
 						Type type = new TypeToken<Customer>() {}.getType();
+						System.out.println(jsonString);
 						Customer customer = gson.fromJson(jsonString, type);
 						em.getTransaction().begin();
 						Customer newCustomer = em.merge(customer);
 						em.getTransaction().commit();
 						em.close();
 						factory.close();
-
-				        return "Customer was updated";	
+						
+						return "{​​'message':'Customer was updated'}​​";
 					}
 					
 					
