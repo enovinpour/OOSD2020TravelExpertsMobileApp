@@ -125,16 +125,14 @@
 
 ----------------------------Crystal's stuff
 
-		//localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/loginId                       //GETS CUSTOMER INFORMATION BASED ON ID - I dont think we use this
+		//localhost:8080/TravelExpertsOOSDJSP/rs/packagesalberta/loginId                       //GETS CUSTOMER INFORMATION BASED ON ID
 		@GET
 		@Path("/loginId/{id}")
 		@Produces(MediaType.APPLICATION_JSON)
-		public String getAgentLoginEmail(@PathParam("id") int custId)
+		public String getCustomerById(@PathParam("id") int custId)
 		{
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory("TravelExpertsOOSDJSP");
 			EntityManager em = factory.createEntityManager();
-			
-//			Query query = em.createQuery("select c from Customer c where c.CustFirstName = "+ validEmail);
 			Customer foundcustomer = em.find(Customer.class, custId);
 			
 			Gson gson = new Gson();
@@ -143,7 +141,7 @@
 			return gson.toJson(foundcustomer);
 		}
 		
-		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/{validEmail}           // crystal - used for the login page
+		//localhost:8081/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/{validEmail}           // Crystal - used for the login page
 		@GET
 		@Path("/LoginEmail/{custEmail}")
 		@Produces(MediaType.APPLICATION_JSON)
@@ -169,7 +167,7 @@
 		}
 		
 		
-																											//crystal - used for the registration page
+																																			     //Crystal - used for the registration page
 		@PUT
 	    @Path("/putcustomer/")
 	    @Consumes(MediaType.APPLICATION_JSON)
