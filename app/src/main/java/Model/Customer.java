@@ -2,6 +2,9 @@ package Model;
 
 import java.io.Serializable;
 
+
+//Author : Crystal Champion , Jessy Perreault
+
 public class Customer implements Serializable {
     private int custId;
     private int agentId;
@@ -18,26 +21,7 @@ public class Customer implements Serializable {
     private int points;
     private String password;
 
-//    public Customer(int custId, String custFirstName, String custLastName, String custAddress,
-//                    String custCity, String custProv, String custPostal, String custCountry,
-//                    String custHomePhone, String custBusPhone,
-//                    String custEmail, int points, String password) {
-//        this.custId = custId;
-//        this.custFirstName = custFirstName;
-//        this.custLastName = custLastName;
-//        this.custAddress = custAddress;
-//        this.custCity = custCity;
-//        this.custProv = custProv;
-//        this.custPostal = custPostal;
-//        this.custCountry = custCountry;
-//        this.custHomePhone = custHomePhone;
-//        this.custBusPhone = custBusPhone;
-//        this.custEmail = custEmail;
-//        this.points = points;
-//        this.password = password;
-//    }
-
-    //Constructor needed for ProfileEditActivity
+    //Constructor needed for ProfileEditActivity : Jessy Perreault
     public Customer(int custId, String custFirstName, String custLastName, String custAddress, String custCity, String custProv, String custPostal, String custCountry, String custHomePhone, String custBusPhone, String custEmail, int agentId, String password) {
         this.custId = custId;
         this.custFirstName = custFirstName;
@@ -54,14 +38,14 @@ public class Customer implements Serializable {
         this.password = password;
     }
 
-    //Constructor needed for ProfileMainActivity
+    //Constructor needed for ProfileMainActivity : Jessy Perreault
     public Customer(int custId, String custFirstName, String custLastName) {
         this.custId = custId;
         this.custFirstName = custFirstName;
         this.custLastName = custLastName;
     }
 
-    //Constructor needed for Register page
+    //Constructor needed for Register page  : Crystal Champion
         public Customer(String custFirstName, String custLastName, String custBusPhone,
                     String custEmail, String password) {
         this.custFirstName = custFirstName;
@@ -70,25 +54,6 @@ public class Customer implements Serializable {
         this.custEmail = custEmail;
         this.password = password;
     }
-//
-//    public Customer(int custId, String custFirstName, String custLastName, String custAddress, String custBusPhone, String custEmail) {
-//        this.custId = custId;
-//        this.custFirstName = custFirstName;
-//        this.custLastName = custLastName;
-//        this.custAddress = custAddress;
-//        this.custBusPhone = custBusPhone;
-//        this.custEmail = custEmail;
-//    }
-//
-//    public Customer(int custId, int agentId, String custFirstName, String custLastName, String custAddress, String custBusPhone, String custEmail) {
-//        this.custId = custId;
-//        this.agentId = agentId;
-//        this.custFirstName = custFirstName;
-//        this.custLastName = custLastName;
-//        this.custAddress = custAddress;
-//        this.custBusPhone = custBusPhone;
-//        this.custEmail = custEmail;
-//    }
 
     public int getCustId() {
         return custId;
