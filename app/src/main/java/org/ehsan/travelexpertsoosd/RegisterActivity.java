@@ -31,6 +31,7 @@ import Model.Customer;
 import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
 import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
 
+///AUTHOR : Crystal Champion ///
 public class RegisterActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     View view;
@@ -121,15 +122,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean EmailValidation(String email){
-        if (email.isEmpty()) { //checks if email is empty                          //checks email
+        if (email.isEmpty()) { //checks if email is empty
             lbl_email.setText("Email *required field");
             lbl_email.setTextColor(Color.RED);
             return false;
-        } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /
+        } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
             lbl_email.setText("Email * invalid email *");
             lbl_email.setTextColor(Color.RED);
             return false;
-        } else {
+        } else {  //reset validation messages, return email is valid
             lbl_email.setText("Email");
             lbl_email.setTextColor(Color.BLACK);
             return true;
@@ -137,7 +138,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean PasswordValidation(String password){
-        if (password.isEmpty()) { //checks if password is empty  `           //check password
+        if (password.isEmpty()) { //checks if password is empty
             lbl_password.setText("Password *required field *");
             lbl_password.setTextColor(Color.RED);
             return false;
@@ -145,7 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
             lbl_password.setText("Password * invalid password *");
             lbl_password.setTextColor(Color.RED);
             return false;
-        } else {
+        } else { //reset validation messages, return password is valid
             lbl_password.setText("Password");
             lbl_password.setTextColor(Color.BLACK);
             return true;
@@ -153,23 +154,23 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean FirstNameValidation(String firstName) {
-        if (firstName.isEmpty()) {                                           //check first name
+        if (firstName.isEmpty()) { //checks if first name is empty
             lbl_firstName.setText("First Name *required field *");
             lbl_firstName.setTextColor(Color.RED);
             return false;
-        } else {
+        } else { //reset validation messages, return first name is valid
             lbl_firstName.setText("First Name");
             lbl_firstName.setTextColor(Color.BLACK);
             return true;
         }
     }
 
-    public boolean LastNameValidation(String LastName) {   //String LastName
-        if (LastName.isEmpty()) {                                           //check first name
+    public boolean LastNameValidation(String LastName) {
+        if (LastName.isEmpty()) { //checks if last name is empty
             lbl_lastName.setText("Last Name *required field *");
             lbl_lastName.setTextColor(Color.RED);
             return false;
-        } else {
+        } else { //reset validation messages, return last name is valid
             lbl_lastName.setText("Last Name");
             lbl_lastName.setTextColor(Color.BLACK);
             return true;
@@ -177,11 +178,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public boolean PhoneNumberValidation(String phone) {
-        if (phone.isEmpty()) {                                           //check phone number
+        if (phone.isEmpty()) { //check if phone number is empty     // second iteration will have phone format validation
             lbl_phoneNumber.setText("Phone Number *required field *");
             lbl_phoneNumber.setTextColor(Color.RED);
             return false;
-        } else {
+        } else {//reset validation messages, return phone number is valid
             lbl_phoneNumber.setText("Phone Number");
             lbl_phoneNumber.setTextColor(Color.BLACK);
             return true;
