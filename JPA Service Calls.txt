@@ -1,6 +1,9 @@
 //Jessy's Customer Stuff
+//Author: Jessy Perreault
+//Course Name: PROJ-207-OOS-Threaded-Project
+//Date: November 2020
 
-// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomers
+// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomers
 					@GET
 					@Path("/getcustomers")
 					@Produces(MediaType.APPLICATION_JSON)
@@ -18,7 +21,7 @@
 						return gson.toJson(list, type);
 					}
 					
-////				// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomer/
+////				// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomer/
 					@GET
 					@Path("/getcustomer/{customerId}")
 					@Produces(MediaType.APPLICATION_JSON)
@@ -36,7 +39,7 @@
 						return gson.toJson(foundCustomer);
 					}
 					
-					// http://127.0.0.1:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist
+					// http://127.0.0.1:8081/TravelExpertsOOSDJSP/rs/agent/getcustomerlist
 					//sends back customer id, firstname, lastname to populate a dropdown list 
 					@GET
 					@Path("/getcustomerlist/{ id }")
