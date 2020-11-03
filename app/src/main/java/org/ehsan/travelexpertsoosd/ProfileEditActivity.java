@@ -134,6 +134,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
             String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/" + custId;
+//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomer/" + custId;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

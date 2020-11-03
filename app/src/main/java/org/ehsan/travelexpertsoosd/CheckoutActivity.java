@@ -18,8 +18,13 @@ import java.util.Date;
 
 import Model.Package;
 
+
+/*
+Author: Ehsan Novin-Pour
+ */
 public class CheckoutActivity extends AppCompatActivity {
 
+    //Global variables
     private String packageName;
     private String tripStart;
     private String tripEnd;
@@ -39,13 +44,14 @@ public class CheckoutActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Checkout");
 
         Intent intent = getIntent();
-        //this is the package that was passed from the PackageSelect activity
+        //this is the package that was passed from the PackageBookActivity2 activity
         checkoutPackage = (Package) intent.getSerializableExtra("passedObject");
 
         packageName = checkoutPackage.getPkgName();
         tripStart = checkoutPackage.getPkgStartDate();
         tripEnd = checkoutPackage.getPkgEndDate();
 
+        //Format the date data coming from the package object
         SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
 
         try {
@@ -62,6 +68,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
 //        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getApplicationContext());
 
+        //Initiate the textview fields
         TextView tvCity = findViewById(R.id.tvCity);
         TextView tvTripDate = findViewById(R.id.tvTripDate);
         final NumberPicker npQty = findViewById(R.id.npQty);
@@ -70,6 +77,7 @@ public class CheckoutActivity extends AppCompatActivity {
         final TextView tvTotal = findViewById(R.id.tvTotal);
         final Button btnPay = findViewById(R.id.btnPay);
 
+        //Initial Price Calculations
         price = checkoutPackage.getPkgBasePrice() + checkoutPackage.getPkgAgencyCommission();
         GST = price * 0.05;
         total = price + GST;
@@ -78,6 +86,7 @@ public class CheckoutActivity extends AppCompatActivity {
         npQty.setMaxValue(4);
         npQty.setMinValue(1);
 
+        //Number picker change view listener
         npQty.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -86,18 +95,20 @@ public class CheckoutActivity extends AppCompatActivity {
                 GST = price * 0.05;
                 total = price + GST;
 
-                tvPrice.setText("$" + String.valueOf(price));
-                tvGST.setText("$" + String.valueOf(GST));
-                tvTotal.setText("$" + String.valueOf(total));
+                tvPrice.setText("Price:   $" + String.valueOf(price));
+                tvGST.setText("GST:   $" + String.valueOf(GST));
+                tvTotal.setText("Total:   $" + String.valueOf(total));
             }
         });
 
+        //Fill the textview fields
         tvCity.setText(packageName);
         tvTripDate.setText(tripStart);
         tvPrice.setText("Price:   $" + String.valueOf(price));
         tvGST.setText("GST:   $" + String.valueOf(GST));
         tvTotal.setText("Total:   $" + String.valueOf(total));
 
+        //Start the Credit Card Activity
         btnPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

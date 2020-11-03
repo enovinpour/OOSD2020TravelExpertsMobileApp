@@ -42,7 +42,12 @@ import Model.CreditCard;
 import Model.Customer;
 import Model.Package;
 
+/*
+Author: Ehsan Novin-Pour
+ */
+
 public class CreditCardActivity extends AppCompatActivity {
+    //Global Variable
     private TextView tvPrice;
     private EditText etCardNumber, etCardName, etExpiry, etCode, etFirstName,
         etLastName, etAddress1, etEmail, etPostal, etCity, etCountry, etPhone;
@@ -70,14 +75,19 @@ public class CreditCardActivity extends AppCompatActivity {
         toolBarLayout.setTitle("Credit Card");
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Grab data from passed over from checkout activity
+        qty = 1;
         Intent intent = getIntent();
         price = intent.getDoubleExtra("Total",0);
         qty = intent.getIntExtra("qty",1);
         Package checkoutPackage = (Package) intent.getSerializableExtra("passedObject");
         packageId = checkoutPackage.getPackageId();
 
+
         requestQueue = Volley.newRequestQueue(this);
+        //Get sharedprefences set in login activity
         pref = getSharedPreferences("user_details",MODE_PRIVATE);
+
 
         tvPrice = findViewById(R.id.tvPrice);
         etCardNumber = findViewById(R.id.etCardNumber);
@@ -94,24 +104,22 @@ public class CreditCardActivity extends AppCompatActivity {
         btnPayment = findViewById(R.id.btnPayment);
         etPhone = findViewById(R.id.etPhone);
 
+        //id comes from login activity
         id = pref.getInt("id", 1);
+        // execute the thread
         Executors.newSingleThreadExecutor().execute(new GetCustomer());
 
 //        Executors.newSingleThreadExecutor().execute(new GetCredit());
 
+
         tvPrice.setText("$" + price);
-
-
-//        long dateLong = System.currentTimeMillis();
-//        date = new java.sql.Date(dateLong);
-//        Log.d("Ehsan", "onCreate: " + date);
 
         java.util.Date utilDate = new java.util.Date();
         date = new java.sql.Date(utilDate.getTime());
         Log.d("Ehsan", "onCreate: " + date);
 
 
-        //Needs to be done tomorrow
+        //Payment button event handler
         btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,6 +134,7 @@ public class CreditCardActivity extends AppCompatActivity {
                 custCountry = etCountry.getText().toString();
                 custPhone = etPhone.getText().toString();
 
+                //if all fields are filled execute the PutBooking thread
                 if (!custCardNumber.isEmpty() && !custCardNumber.isEmpty() && !expiryDate.isEmpty()
                         && !security.isEmpty() && !custFirstName.isEmpty() && !custLastName.isEmpty() &&
                         !custEmail.isEmpty() && !custPostal.isEmpty() && !custCountry.isEmpty() &&
@@ -141,6 +150,7 @@ public class CreditCardActivity extends AppCompatActivity {
 
     }
 
+    //GetCustomer runnable class
     class GetCustomer implements Runnable {
         @Override
         public void run() {
@@ -150,7 +160,6 @@ public class CreditCardActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     VolleyLog.wtf(response,"utf-8");
-
                     try {
 //                        JSONArray jsonArray = new JSONArray(response);
 //                        JSONObject object = jsonArray.getJSONObject(0);
@@ -189,6 +198,14 @@ public class CreditCardActivity extends AppCompatActivity {
 
             requestQueue.add(stringRequest);
 
+
+            //To allow the app to have enough time to parse the first JSON Object. This solved the
+            //errors that we were getting which were suspected to be due to timing.
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // Credit Card
 
@@ -240,6 +257,8 @@ public class CreditCardActivity extends AppCompatActivity {
         }
     }
 
+
+    //PutBooking runnable Class
     class PutBooking implements Runnable {
         private Booking booking;
 
@@ -270,9 +289,10 @@ public class CreditCardActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     try {
+                                        //If put is successful, make toast and switch over to the profileMainActivity
                                         Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
 
-                                        Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
+                                        Intent intent = new Intent(getApplicationContext(), ProfileMainActivity.class);
                                         startActivity(intent);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -292,42 +312,3 @@ public class CreditCardActivity extends AppCompatActivity {
         }
     }
 }
-
-//    class GetCredit implements Runnable {
-//        @Override
-//        public void run() {
-//
-//            StringBuffer buffer = new StringBuffer();
-//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/" + id;
-//            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    VolleyLog.wtf(response,"utf-8");
-//
-//                    try{
-//
-//                        JSONArray jsonArray = new JSONArray(response);
-//                        JSONObject object = jsonArray.getJSONObject(0);
-//                        CreditCard cc = new CreditCard(object.getInt("creditCardId"),
-//                                object.getString("CCName"), object.getString("CCNumber"),
-//                                object.getString("CCExpiry"),object.getInt("customerId"));
-//
-//                        etCardName.setText(customer.getCustFirstName() + " " + customer.getCustLastName());
-//                        etCardNumber.setText(cc.getCcNumber());
-//                        etExpiry.setText(cc.getCcExpiry());
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    VolleyLog.wtf(error.getMessage(), "utf-8");
-//                }
-//            });
-//
-//            requestQueue.add(stringRequest);
-//        }
-//    }

@@ -1,0 +1,330 @@
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.app.Activity;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.graphics.Color;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.view.inputmethod.InputMethodManager;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageButton;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.JsonObjectRequest;\r\nimport com.android.volley.toolbox.StringRequest;\r\nimport com.android.volley.toolbox.Volley;\r\n\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.Customer;\r\n\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidPassword;\r\n\r\npublic class ProfileEditActivity extends AppCompatActivity {\r\n    Button btnSave;\r\n    ImageButton btnEditBack;\r\n    TextView txtValidator, lblFirstName, lblLastName, lblEmail, lblPhone, lblAddress;\r\n    EditText txtFirstName, txtLastName, txtUserEmail, txtUserPhone, txtUserAddress;\r\n    RequestQueue requestQueue;\r\n    SharedPreferences prf;\r\n    Customer customer;\r\n    int agentId = 1;\r\n    int custId;\r\n    String custCity = \"\";\r\n    String custProv = \"\";\r\n    String custPostal = \"\";\r\n    String custCountry = \"\";\r\n    String custHomePhone = \"\";\r\n    String custPassword = \"\";\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_profile_edit);\r\n\r\n        prf = getSharedPreferences(\"user_details\",MODE_PRIVATE);\r\n        custId = prf.getInt(\"id\", 1);\r\n\r\n        requestQueue = Volley.newRequestQueue(this);\r\n\r\n        btnSave = findViewById(R.id.btnSave);\r\n        btnEditBack = findViewById(R.id.btnEditBack);\r\n        txtFirstName = findViewById(R.id.txtFirstName);\r\n        txtLastName = findViewById(R.id.txtLastName);\r\n        txtUserEmail = findViewById(R.id.txtUserEmail);\r\n        txtUserPhone = findViewById(R.id.txtUserPhone);\r\n        txtUserAddress = findViewById(R.id.txtUserAddress);\r\n        txtValidator = findViewById(R.id.txtValidator);\r\n        lblFirstName = findViewById(R.id.lblFirstName);\r\n        lblLastName = findViewById(R.id.lblLastName);\r\n        lblPhone = findViewById(R.id.lblPhone);\r\n        lblAddress = findViewById(R.id.lblAddress);\r\n        lblEmail = findViewById(R.id.lblEmail);\r\n        btnEditBack = findViewById(R.id.btnEditBack);\r\n        btnEditBack.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                finish();\r\n            }\r\n        });\r\n        Intent intent = getIntent();\r\n        customer = (Customer) intent.getSerializableExtra(\"customer\");\r\n\r\n        Executors.newSingleThreadExecutor().execute(new GetCustomer());\r\n\r\n\r\n\r\n        btnSave.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n\r\n                String firstName = txtFirstName.getText().toString();\r\n                String lastName = txtLastName.getText().toString();\r\n                String address = txtUserAddress.getText().toString();\r\n                String city = custCity;\r\n                String prov = custProv;\r\n                String postal = custPostal;\r\n                String country = custCountry;\r\n                String homePhone = custHomePhone;\r\n                String phone = txtUserPhone.getText().toString();\r\n                String email = txtUserEmail.getText().toString();\r\n                Customer customer = new Customer(\r\n                        custId, firstName, lastName, address, city, prov, postal, country, homePhone, phone, email, agentId, custPassword\r\n                );\r\n                if (email.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) { //checks if email is empty\r\n//                    lblEmail.setTextColor(Color.RED);\r\n//                    lblFirstName.setTextColor(Color.RED);\r\n//                    lblLastName.setTextColor(Color.RED);\r\n                    txtValidator.setText(\"Please fill in all required fields *\");\r\n                } else if (!isValidEmailNoAlert(email)) { //checks if email is valid\r\n                    lblEmail.setText(\"Email * invalid email *\");\r\n                    lblEmail.setTextColor(Color.RED);\r\n                } else\r\n                {\r\n                    //else, all fields are valid\r\n                    Executors.newSingleThreadExecutor().execute(new PostCustomer(customer));\r\n                }\r\n\r\n            }\r\n        });\r\n    }\r\n\r\n    class GetCustomer implements Runnable {\r\n        @Override\r\n        public void run() {\r\n            //retrieve JSON data from REST service into StringBuffer\r\n            StringBuffer buffer = new StringBuffer();\r\n            String url = \"http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist/\" + custId;\r\n            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response, \"utf-8\");\r\n\r\n                    //convert JSON data from response string into an Customer\r\n\r\n                    try {\r\n                        JSONArray jsonArray = new JSONArray(response);\r\n                        JSONObject object = jsonArray.getJSONObject(0);\r\n                        Customer cust = new Customer(\r\n                                    object.getInt(\"CustomerId\"), object.getString(\"CustFirstName\"), object.getString(\"CustLastName\"),\r\n                                    object.getString(\"CustAddress\"), object.getString(\"CustCity\"), object.getString(\"CustProv\"),\r\n                                    object.getString(\"CustPostal\"), object.getString(\"CustCountry\"), object.getString(\"CustHomePhone\"),\r\n                                    object.getString(\"CustBusPhone\"), object.getString(\"CustEmail\"), object.getInt(\"AgentId\"), object.getString(\"Password\"));\r\n                        custId = cust.getCustId();\r\n                        txtFirstName.setText(cust.getCustFirstName());\r\n                        txtLastName.setText(cust.getCustLastName());\r\n                        txtUserAddress.setText(cust.getCustAddress());\r\n                        custCity = cust.getCustCity();\r\n                        custProv = cust.getCustProv();\r\n                        custPostal = cust.getCustPostal();\r\n                        custCountry = cust.getCustCountry();\r\n                        custHomePhone = cust.getCustHomePhone();\r\n                        txtUserPhone.setText(cust.getCustBusPhone());\r\n                        txtUserEmail.setText(cust.getCustEmail());\r\n                        agentId = cust.getAgentId();\r\n                        custPassword = cust.getPassword();\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n                }\r\n            }, new Response.ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n        }\r\n    }\r\n\r\n    class PostCustomer implements Runnable {\r\n        private Customer customer;\r\n        public PostCustomer(Customer customer) {\r\n            this.customer = customer;\r\n        }\r\n        @Override\r\n        public void run() {\r\n            //send JSON data to REST service\r\n            String url = \"http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/postcustomer/\";\r\n            JSONObject obj = new JSONObject();\r\n            try {\r\n                obj.put(\"customerId\", customer.getCustId());\r\n                obj.put(\"custFirstName\", customer.getCustFirstName()+ \"\");\r\n                obj.put(\"custLastName\", customer.getCustLastName() + \"\");\r\n                obj.put(\"custAddress\", customer.getCustAddress() + \"\");\r\n                obj.put(\"custCity\", customer.getCustCity() + \"\");\r\n                obj.put(\"custProv\", customer.getCustProv() + \"\");\r\n                obj.put(\"custPostal\", customer.getCustPostal() + \"\");\r\n                obj.put(\"custCountry\", customer.getCustCountry() + \"\");\r\n                obj.put(\"custHomePhone\", customer.getCustHomePhone() + \"\");\r\n                obj.put(\"custBusPhone\", customer.getCustBusPhone() + \"\");\r\n                obj.put(\"custEmail\", customer.getCustEmail() + \"\");\r\n                obj.put(\"agentId\", customer.getAgentId());\r\n                obj.put(\"password\", customer.getPassword());\r\n\r\n\r\n            } catch (JSONException e) {\r\n                e.printStackTrace();\r\n            }\r\n            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj,\r\n                    new Response.Listener<JSONObject>() {\r\n                        @Override\r\n                        public void onResponse(final JSONObject response) {\r\n                            Log.d(\"crystal\", \"response=\" + response);\r\n                            VolleyLog.wtf(response.toString(), \"utf-8\");\r\n                            //display result message\r\n                            runOnUiThread(new Runnable() {\r\n                                @Override\r\n                                public void run() {\r\n                                    try {\r\n                                        Toast.makeText(getApplicationContext(), response.getString(\"message\"), Toast.LENGTH_LONG).show();\r\n                                    } catch (JSONException e) {\r\n                                        e.printStackTrace();\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    },\r\n                    new Response.ErrorListener() {\r\n                        @Override\r\n                        public void onErrorResponse(VolleyError error) {\r\n                            Log.d(\"harv\", \"error=\" + error);\r\n                            VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                        }\r\n                    });\r\n            requestQueue.add(jsonObjectRequest);\r\n            Intent intentProfileMain = new Intent(ProfileEditActivity.this, ProfileMainActivity.class);\r\n            finish();\r\n//                intentProfileMain.getSerializableExtra(\"customer\");\r\n            startActivity(intentProfileMain);\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java	(revision 4a8731a63fafca5ea4488b2829661b2ff6e21b6e)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java	(date 1604030905383)
+@@ -130,7 +130,8 @@
+         public void run() {
+             //retrieve JSON data from REST service into StringBuffer
+             StringBuffer buffer = new StringBuffer();
+-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist/" + custId;
++            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/" + custId;
++//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomer/" + custId;
+             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+@@ -184,7 +185,7 @@
+         @Override
+         public void run() {
+             //send JSON data to REST service
+-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/postcustomer/";
++            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/postcustomer/";
+             JSONObject obj = new JSONObject();
+             try {
+                 obj.put("customerId", customer.getCustId());
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport android.content.Intent;\r\nimport android.graphics.Color;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.JsonObjectRequest;\r\nimport com.android.volley.toolbox.Volley;\r\n\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.Customer;\r\n\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidPassword;\r\n\r\npublic class RegisterActivity extends AppCompatActivity {\r\n    RequestQueue requestQueue;\r\n    View view;\r\n    EditText txt_firstName, txt_lastName, txt_initial, txt_custPhone, txt_email, txt_password;\r\n    Button btn_submit;\r\n    TextView lbl_email, lbl_password, lbl_firstName, lbl_lastName, lbl_initial, lbl_phoneNumber;\r\n    Intent toLogin;\r\n\r\n    String address = \"Unset\";\r\n    String city = \"Unset\";\r\n    String prov = \"AB\";\r\n    String postal = \"Unset\";\r\n    String country = \"Unset\";\r\n    String homePhone = \"Unset\";\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_register);\r\n        requestQueue = Volley.newRequestQueue(this);\r\n        toLogin = new Intent(RegisterActivity.this, LoginActivity.class);\r\n        txt_firstName = findViewById(R.id.txt_firstName);\r\n        txt_initial = findViewById(R.id.txt_initial);\r\n        txt_lastName = findViewById(R.id.txt_lastName);\r\n        txt_custPhone = findViewById(R.id.txt_custPhone);\r\n        txt_email = findViewById(R.id.txt_email);\r\n        txt_password = findViewById(R.id.txt_password);\r\n\r\n        lbl_firstName = findViewById(R.id.lbl_firstName);\r\n        lbl_initial = findViewById(R.id.lbl_initial);\r\n        lbl_lastName = findViewById(R.id.lbl_lastName);\r\n        lbl_phoneNumber = findViewById(R.id.lbl_phoneNumber);\r\n        lbl_email = findViewById(R.id.lbl_email);\r\n        lbl_password = findViewById(R.id.lbl_password);\r\n\r\n        btn_submit = findViewById(R.id.btn_submit);\r\n\r\n\r\n        btn_submit.setOnClickListener(new View.OnClickListener() {\r\n                                          @Override\r\n                                          public void onClick(View v) {\r\n                                              String firstName = txt_firstName.getText().toString();\r\n                                              String lastName = txt_lastName.getText().toString();\r\n                                              String phone = txt_custPhone.getText().toString();\r\n                                              String email = txt_email.getText().toString();\r\n                                              String password = txt_password.getText().toString();\r\n\r\n                                              if (!EmailValidation(email) || !PhoneNumberValidation(phone) || !FirstNameValidation(firstName) || !LastNameValidation(lastName) || !PasswordValidation(password)) {\r\n\r\n                                                  if (!EmailValidation(email)) {\r\n                                                      EmailValidation(email);\r\n                                                  }\r\n\r\n                                                  if (!PhoneNumberValidation(phone)) {\r\n                                                      PhoneNumberValidation(phone);\r\n                                                  }\r\n\r\n                                                  if (!FirstNameValidation(firstName)) {\r\n                                                      FirstNameValidation(firstName);\r\n\r\n                                                  }\r\n                                                  if (!LastNameValidation(lastName)) {\r\n                                                      LastNameValidation(lastName);\r\n                                                  }\r\n\r\n                                                  if (!PasswordValidation(password)) {\r\n                                                      PasswordValidation(password);\r\n                                                  }\r\n                                              } else {\r\n\r\n                                                  {\r\n                                                  Customer customer = new Customer(\r\n                                                          firstName,\r\n                                                          lastName,\r\n                                                          phone,\r\n                                                          email,\r\n                                                          password\r\n                                                  );\r\n                                                  Log.d(\"customer crystal \", customer.getCustFirstName());\r\n\r\n                                                  Executors.newSingleThreadExecutor().execute(new RegisterActivity.PutCustomer(customer));\r\n                                                      startActivity(toLogin);\r\n\r\n                                                  }\r\n                                              }\r\n                                          }\r\n        });\r\n    }\r\n\r\n    public boolean EmailValidation(String email){\r\n        if (email.isEmpty()) { //checks if email is empty                          //checks email\r\n            lbl_email.setText(\"Email *required field\");\r\n            lbl_email.setTextColor(Color.RED);\r\n            return false;\r\n        } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /\r\n            lbl_email.setText(\"Email * invalid email *\");\r\n            lbl_email.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_email.setText(\"Email\");\r\n            lbl_email.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean PasswordValidation(String password){\r\n        if (password.isEmpty()) { //checks if password is empty  `           //check password\r\n            lbl_password.setText(\"Password *required field *\");\r\n            lbl_password.setTextColor(Color.RED);\r\n            return false;\r\n        } else if (!isValidPassword(password)) { //checks if password is valid\r\n            lbl_password.setText(\"Password * invalid password *\");\r\n            lbl_password.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_password.setText(\"Password\");\r\n            lbl_password.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean FirstNameValidation(String firstName) {\r\n        if (firstName.isEmpty()) {                                           //check first name\r\n            lbl_firstName.setText(\"First Name *required field *\");\r\n            lbl_firstName.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_firstName.setText(\"First Name\");\r\n            lbl_firstName.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean LastNameValidation(String LastName) {   //String LastName\r\n        if (LastName.isEmpty()) {                                           //check first name\r\n            lbl_lastName.setText(\"Last Name *required field *\");\r\n            lbl_lastName.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_lastName.setText(\"Last Name\");\r\n            lbl_lastName.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean PhoneNumberValidation(String phone) {\r\n        if (phone.isEmpty()) {                                           //check phone number\r\n            lbl_phoneNumber.setText(\"Phone Number *required field *\");\r\n            lbl_phoneNumber.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_phoneNumber.setText(\"Phone Number\");\r\n            lbl_phoneNumber.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    class PutCustomer implements Runnable {\r\n        private Customer customer;\r\n\r\n        public PutCustomer(Customer customer) {\r\n            this.customer = customer;\r\n        }\r\n\r\n        @Override\r\n        public void run() {\r\n            //send JSON data to REST service\r\n            String url = \"http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/putcustomer/\";\r\n            JSONObject obj = new JSONObject();\r\n            try {\r\n//                obj.put(\"custId\", customer.getCustId() + \"\");\r\n                obj.put(\"custFirstName\", customer.getCustFirstName()+ \"\");\r\n                obj.put(\"custLastName\", customer.getCustLastName() + \"\");\r\n                obj.put(\"custAddress\", address + \"\");\r\n                obj.put(\"custCity\", city + \"\");\r\n                obj.put(\"custProv\", prov + \"\");\r\n                obj.put(\"custPostal\", postal + \"\");\r\n                obj.put(\"custCountry\", country + \"\");\r\n                obj.put(\"custHomePhone\", homePhone + \"\");\r\n                obj.put(\"custBusPhone\", customer.getCustBusPhone() + \"\");\r\n                obj.put(\"custEmail\", customer.getCustEmail() + \"\");\r\n                obj.put(\"password\", customer.getPassword() + \"\"); // name is case sensitive\r\n\r\n            } catch (JSONException e) {\r\n                e.printStackTrace();\r\n            }\r\n            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,\r\n                    new Response.Listener<JSONObject>() {\r\n                        @Override\r\n                        public void onResponse(final JSONObject response) {\r\n                            Log.d(\"crystal\", \"response=\" + response);\r\n                            VolleyLog.wtf(response.toString(), \"utf-8\");\r\n\r\n                            //display result message\r\n                            runOnUiThread(new Runnable() {\r\n                                @Override\r\n                                public void run() {\r\n                                    try {\r\n                                        Toast.makeText(getApplicationContext(), response.getString(\"message\"), Toast.LENGTH_LONG).show();\r\n                                    } catch (JSONException e) {\r\n                                        e.printStackTrace();\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    },\r\n                    new Response.ErrorListener() {\r\n                        @Override\r\n                        public void onErrorResponse(VolleyError error) {\r\n                            Log.d(\"harv\", \"error=\" + error);\r\n                            VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                        }\r\n                    });\r\n\r\n            requestQueue.add(jsonObjectRequest);\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java	(revision 4a8731a63fafca5ea4488b2829661b2ff6e21b6e)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java	(date 1604030932990)
+@@ -198,7 +198,7 @@
+         @Override
+         public void run() {
+             //send JSON data to REST service
+-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/putcustomer/";
++            String url = "http://192.168.0.12:8081/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/";
+             JSONObject obj = new JSONObject();
+             try {
+ //                obj.put("custId", customer.getCustId() + "");
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.StringRequest;\r\nimport com.android.volley.toolbox.Volley;\r\nimport com.google.android.material.appbar.CollapsingToolbarLayout;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.appcompat.widget.Toolbar;\r\n\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.TextView;\r\n\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.CreditCard;\r\nimport Model.Customer;\r\n\r\npublic class CreditCardActivity extends AppCompatActivity {\r\n    TextView tvPrice;\r\n    EditText etCardNumber, etCardName, etExpiry, etCode, etFirstName,\r\n        etLastName, etAddress1, etAddress2, etPostal, etCity, etCountry, etPhone;\r\n    Button btnPayment;\r\n    RequestQueue requestQueue;\r\n    Customer customer;\r\n    SharedPreferences pref;\r\n    int id;\r\n    double price;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_credit_card);\r\n        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);\r\n        setSupportActionBar(toolbar);\r\n        CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);\r\n        toolBarLayout.setTitle(\"Credit Card\");\r\n        getSupportActionBar().setDisplayHomeAsUpEnabled(true);\r\n\r\n        Intent intent = getIntent();\r\n        price = intent.getDoubleExtra(\"Total\",0);\r\n\r\n        requestQueue = Volley.newRequestQueue(this);\r\n        pref = getSharedPreferences(\"user_details\",MODE_PRIVATE);\r\n\r\n        id = pref.getInt(\"id\", 1);\r\n\r\n        tvPrice = findViewById(R.id.tvPrice);\r\n        etCardNumber = findViewById(R.id.etCardNumber);\r\n        etCardName = findViewById(R.id.etCardName);\r\n        etExpiry = findViewById(R.id.etExpiry);\r\n        etCode = findViewById(R.id.etCode);\r\n        etFirstName = findViewById(R.id.etFirstName);\r\n        etLastName = findViewById(R.id.etLastName);\r\n        etAddress1 = findViewById(R.id.etAdress1);\r\n        etAddress2 = findViewById(R.id.etAdress2);\r\n        etPostal = findViewById(R.id.etPostal);\r\n        etCity = findViewById(R.id.etCity);\r\n        etCountry = findViewById(R.id.etCountry);\r\n        btnPayment = findViewById(R.id.btnPayment);\r\n        etPhone = findViewById(R.id.etPhone);\r\n\r\n        Executors.newSingleThreadExecutor().execute(new GetCustomer());\r\n\r\n//        Executors.newSingleThreadExecutor().execute(new GetCredit());\r\n\r\n        tvPrice.setText(\"$\" + price);\r\n\r\n        //Needs to be done tomorrow\r\n        btnPayment.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n            }\r\n        });\r\n\r\n    }\r\n\r\n    class GetCustomer implements Runnable {\r\n        @Override\r\n        public void run() {\r\n            StringBuffer buffer = new StringBuffer();\r\n            String url = \"http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/loginId/\" + id;\r\n            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response,\"utf-8\");\r\n\r\n                    try {\r\n//                        JSONArray jsonArray = new JSONArray(response);\r\n//                        JSONObject object = jsonArray.getJSONObject(0);\r\n\r\n                        JSONObject object = new JSONObject(response);\r\n                        Log.d(\"ehsan\", \"onResponse: \" + object);\r\n\r\n                        customer = new Customer(object.getInt(\"customerId\"), object.getString(\"custFirstName\"),\r\n                                object.getString(\"custLastName\"),object.getString(\"custAddress\"), object.getString(\"custCity\"),\r\n                                object.getString(\"custProv\"), object.getString(\"custPostal\"), object.getString(\"custCountry\"),\r\n                                object.getString(\"custHomePhone\"), object.getString(\"custBusPhone\"), object.getString(\"custEmail\"),\r\n                                object.getInt(\"points\"), object.getString(\"password\"));\r\n\r\n                        etFirstName.setText(customer.getCustFirstName());\r\n                        etLastName.setText(customer.getCustLastName());\r\n                        etAddress1.setText(customer.getCustAddress());\r\n                        etPostal.setText(customer.getCustPostal());\r\n                        etCity.setText(customer.getCustCity());\r\n                        etCountry.setText(customer.getCustCountry());\r\n                        etPhone.setText(customer.getCustBusPhone());\r\n\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n\r\n                }\r\n            }, new Response.ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n\r\n\r\n            // Credit Card\r\n\r\n            buffer = new StringBuffer();\r\n            url = \"http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcc/\" + id;\r\n            stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response,\"utf-8\");\r\n\r\n                    try{\r\n\r\n                        JSONArray jsonArray = new JSONArray(response);\r\n                        JSONObject object = jsonArray.getJSONObject(0);\r\n                        CreditCard cc = new CreditCard(object.getInt(\"creditCardId\"),\r\n                                object.getString(\"CCName\"), object.getString(\"CCNumber\"),\r\n                                object.getString(\"CCExpiry\"),object.getInt(\"customerId\"));\r\n\r\n                        etCardName.setText(customer.getCustFirstName() + \" \" + customer.getCustLastName());\r\n                        etCardNumber.setText(cc.getCcNumber());\r\n                        etExpiry.setText(cc.getCcExpiry());\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n                }\r\n            }, new Response.ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n\r\n        }\r\n    }\r\n\r\n//    class GetCredit implements Runnable {\r\n//        @Override\r\n//        public void run() {\r\n//\r\n//            StringBuffer buffer = new StringBuffer();\r\n//            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/\" + id;\r\n//            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n//                @Override\r\n//                public void onResponse(String response) {\r\n//                    VolleyLog.wtf(response,\"utf-8\");\r\n//\r\n//                    try{\r\n//\r\n//                        JSONArray jsonArray = new JSONArray(response);\r\n//                        JSONObject object = jsonArray.getJSONObject(0);\r\n//                        CreditCard cc = new CreditCard(object.getInt(\"creditCardId\"),\r\n//                                object.getString(\"CCName\"), object.getString(\"CCNumber\"),\r\n//                                object.getString(\"CCExpiry\"),object.getInt(\"customerId\"));\r\n//\r\n//                        etCardName.setText(customer.getCustFirstName() + \" \" + customer.getCustLastName());\r\n//                        etCardNumber.setText(cc.getCcNumber());\r\n//                        etExpiry.setText(cc.getCcExpiry());\r\n//\r\n//                    } catch (JSONException e) {\r\n//                        e.printStackTrace();\r\n//                    }\r\n//\r\n//                }\r\n//            }, new Response.ErrorListener() {\r\n//                @Override\r\n//                public void onErrorResponse(VolleyError error) {\r\n//                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n//                }\r\n//            });\r\n//\r\n//            requestQueue.add(stringRequest);\r\n//        }\r\n//    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java	(revision 4a8731a63fafca5ea4488b2829661b2ff6e21b6e)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java	(date 1604030861190)
+@@ -7,8 +7,10 @@
+ import com.android.volley.Request;
+ import com.android.volley.RequestQueue;
+ import com.android.volley.Response;
++import com.android.volley.Response.ErrorListener;
+ import com.android.volley.VolleyError;
+ import com.android.volley.VolleyLog;
++import com.android.volley.toolbox.JsonObjectRequest;
+ import com.android.volley.toolbox.StringRequest;
+ import com.android.volley.toolbox.Volley;
+ import com.google.android.material.appbar.CollapsingToolbarLayout;
+@@ -21,26 +23,42 @@
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.TextView;
++import android.widget.Toast;
+ 
+ import org.json.JSONArray;
+ import org.json.JSONException;
+ import org.json.JSONObject;
+ 
++import java.sql.Date;
++import java.text.ParseException;
++import java.text.SimpleDateFormat;
++import java.time.LocalDate;
++import java.util.Calendar;
+ import java.util.concurrent.Executors;
+ 
++import Model.Booking;
++import Model.BookingDetail;
+ import Model.CreditCard;
+ import Model.Customer;
++import Model.Package;
+ 
+ public class CreditCardActivity extends AppCompatActivity {
+-    TextView tvPrice;
+-    EditText etCardNumber, etCardName, etExpiry, etCode, etFirstName,
+-        etLastName, etAddress1, etAddress2, etPostal, etCity, etCountry, etPhone;
+-    Button btnPayment;
+-    RequestQueue requestQueue;
+-    Customer customer;
+-    SharedPreferences pref;
+-    int id;
+-    double price;
++    private TextView tvPrice;
++    private EditText etCardNumber, etCardName, etExpiry, etCode, etFirstName,
++        etLastName, etAddress1, etEmail, etPostal, etCity, etCountry, etPhone;
++    private Button btnPayment;
++    private RequestQueue requestQueue;
++    private Customer customer;
++    private SharedPreferences pref;
++    private int id, qty, packageId;
++    private double price;
++    private String custFirstName, custLastName, custCardHolderName, custCardNumber, expiryDate
++        ,security, custEmail, custAddress, custCity, custPostal, custCountry, custPhone, expiryDateFormat;
++    private Booking booking;
++    private BookingDetail bd;
++    private Package checkoutPackage;
++    private Date date;
++
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -50,16 +68,17 @@
+         setSupportActionBar(toolbar);
+         CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+         toolBarLayout.setTitle("Credit Card");
+-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
++//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+ 
+         Intent intent = getIntent();
+         price = intent.getDoubleExtra("Total",0);
++        qty = intent.getIntExtra("qty",1);
++        Package checkoutPackage = (Package) intent.getSerializableExtra("passedObject");
++        packageId = checkoutPackage.getPackageId();
+ 
+         requestQueue = Volley.newRequestQueue(this);
+         pref = getSharedPreferences("user_details",MODE_PRIVATE);
+ 
+-        id = pref.getInt("id", 1);
+-
+         tvPrice = findViewById(R.id.tvPrice);
+         etCardNumber = findViewById(R.id.etCardNumber);
+         etCardName = findViewById(R.id.etCardName);
+@@ -67,24 +86,56 @@
+         etCode = findViewById(R.id.etCode);
+         etFirstName = findViewById(R.id.etFirstName);
+         etLastName = findViewById(R.id.etLastName);
++        etEmail = findViewById(R.id.etEmail);
+         etAddress1 = findViewById(R.id.etAdress1);
+-        etAddress2 = findViewById(R.id.etAdress2);
+         etPostal = findViewById(R.id.etPostal);
+         etCity = findViewById(R.id.etCity);
+         etCountry = findViewById(R.id.etCountry);
+         btnPayment = findViewById(R.id.btnPayment);
+         etPhone = findViewById(R.id.etPhone);
+ 
++        id = pref.getInt("id", 1);
+         Executors.newSingleThreadExecutor().execute(new GetCustomer());
+ 
+ //        Executors.newSingleThreadExecutor().execute(new GetCredit());
+ 
+         tvPrice.setText("$" + price);
+ 
++
++//        long dateLong = System.currentTimeMillis();
++//        date = new java.sql.Date(dateLong);
++//        Log.d("Ehsan", "onCreate: " + date);
++
++        java.util.Date utilDate = new java.util.Date();
++        date = new java.sql.Date(utilDate.getTime());
++        Log.d("Ehsan", "onCreate: " + date);
++
++
+         //Needs to be done tomorrow
+         btnPayment.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
++                custCardHolderName = etCardName.getText().toString();
++                custCardNumber = etCardNumber.getText().toString();
++                expiryDate = etExpiry.getText().toString();
++                security = etCode.getText().toString();
++                custFirstName = etFirstName.getText().toString();
++                custLastName = etLastName.getText().toString();
++                custEmail = etEmail.getText().toString();
++                custPostal = etPostal.getText().toString();
++                custCountry = etCountry.getText().toString();
++                custPhone = etPhone.getText().toString();
++
++                if (!custCardNumber.isEmpty() && !custCardNumber.isEmpty() && !expiryDate.isEmpty()
++                        && !security.isEmpty() && !custFirstName.isEmpty() && !custLastName.isEmpty() &&
++                        !custEmail.isEmpty() && !custPostal.isEmpty() && !custCountry.isEmpty() &&
++                        !custPhone.isEmpty()) {
++                    Executors.newSingleThreadExecutor().execute(new PutBooking());
++
++                } else {
++                    Toast toast = Toast.makeText(getApplicationContext(), "Please Fill Out All Fields Correctly", Toast.LENGTH_SHORT);
++                    toast.show();
++                }
+             }
+         });
+ 
+@@ -94,7 +145,7 @@
+         @Override
+         public void run() {
+             StringBuffer buffer = new StringBuffer();
+-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/loginId/" + id;
++            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/loginId/" + id;
+             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+@@ -116,6 +167,7 @@
+                         etFirstName.setText(customer.getCustFirstName());
+                         etLastName.setText(customer.getCustLastName());
+                         etAddress1.setText(customer.getCustAddress());
++                        etEmail.setText(customer.getCustEmail());
+                         etPostal.setText(customer.getCustPostal());
+                         etCity.setText(customer.getCustCity());
+                         etCountry.setText(customer.getCustCountry());
+@@ -128,7 +180,7 @@
+ 
+ 
+                 }
+-            }, new Response.ErrorListener() {
++            }, new ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+                     VolleyLog.wtf(error.getMessage(), "utf-8");
+@@ -141,7 +193,7 @@
+             // Credit Card
+ 
+             buffer = new StringBuffer();
+-            url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcc/" + id;
++            url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcc/" + id;
+             stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+@@ -157,14 +209,26 @@
+ 
+                         etCardName.setText(customer.getCustFirstName() + " " + customer.getCustLastName());
+                         etCardNumber.setText(cc.getCcNumber());
+-                        etExpiry.setText(cc.getCcExpiry());
++
++                        SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
++
++                        try {
++                            java.util.Date exipryDateUnformat = format.parse(cc.getCcExpiry());
++                            format.applyPattern("MM/yy");
++                            expiryDateFormat = format.format(exipryDateUnformat);
++
++                        } catch (ParseException e) {
++                            e.printStackTrace();
++                        }
++
++                        etExpiry.setText(expiryDateFormat);
+ 
+                     } catch (JSONException e) {
+                         e.printStackTrace();
+                     }
+ 
+                 }
+-            }, new Response.ErrorListener() {
++            }, new ErrorListener() {
+                 @Override
+                 public void onErrorResponse(VolleyError error) {
+                     VolleyLog.wtf(error.getMessage(), "utf-8");
+@@ -176,6 +240,59 @@
+         }
+     }
+ 
++    class PutBooking implements Runnable {
++        private Booking booking;
++
++        @Override
++        public void run() {
++            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/putbooking";
++            JSONObject obj = new JSONObject();
++            try {
++                obj.put("bookingDate", date);
++                obj.put("bookingNo", "12345");
++                obj.put("travelerCount", qty);
++                obj.put("customerId", customer.getCustId());
++                obj.put("tripTypeId", "L");
++                obj.put("packageId", packageId);
++
++            } catch (JSONException e) {
++                e.printStackTrace();
++            }
++
++            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,
++                    new Response.Listener<JSONObject>() {
++                        @Override
++                        public void onResponse(final JSONObject response) {
++                            Log.d("Ehsan", "response" + response);
++                            VolleyLog.wtf(response.toString(), "utf-8");
++
++                            runOnUiThread(new Runnable() {
++                                @Override
++                                public void run() {
++                                    try {
++                                        Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
++
++                                        Intent intent = new Intent(getApplicationContext(), ProfileMainActivity.class);
++                                        startActivity(intent);
++                                    } catch (JSONException e) {
++                                        e.printStackTrace();
++                                    }
++                                }
++                            });
++                        }
++                    },
++                        new Response.ErrorListener(){
++                        @Override
++                        public void onErrorResponse(VolleyError error) {
++                            Log.d("Ehsan", "error=" + error);
++                            VolleyLog.wtf(error.getMessage(), "utf-8");
++                        }
++                    });
++                requestQueue.add(jsonObjectRequest);
++        }
++    }
++}
++
+ //    class GetCredit implements Runnable {
+ //        @Override
+ //        public void run() {
+@@ -213,5 +330,4 @@
+ //
+ //            requestQueue.add(stringRequest);
+ //        }
+-//    }
+-}
+\ No newline at end of file
++//    }
+\ No newline at end of file

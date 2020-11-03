@@ -15,6 +15,8 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<String>list1;
     SearchView sv;
 
+    //Author: Sean Burman, we were not able to get it to function in time and we decided to keep this functionality out of the final demo
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
