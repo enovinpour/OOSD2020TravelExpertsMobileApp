@@ -1,3 +1,11 @@
+/*
+ * Threaded Project Term 3 Workspace Workshop 8
+ * Purpose: This is the code behind for the activity that displays all the information about
+ * a travel package that was selected in the PackageSelectActivity
+ * Author: Group 2 - Doug Cameron and Eshan Novin-Pour were primary developers of this page
+ * Date: Oct, 2020
+ */
+
 package org.ehsan.travelexpertsoosd;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,21 +41,23 @@ import java.util.concurrent.Executors;
 import Model.Package;
 
 public class PackageBookActivity2 extends AppCompatActivity {
-
+    //define the controls used in the page
     Package checkoutPackage;
     ImageView ivPackageBook, ivPackageMap, ivHotel, ivFood;
-    ImageButton imgBtnBack;
     TextView tvPackageBookPgkName, tvPackageCostDesc, tvCost, tvFamilyFriendly, tvFoodIncluded, tvAbout;
     TextView tvLongDesc, tvLocation, tvCostFinal, tvHotelDetails, tvFoodDetails;
     RequestQueue requestQueue;
-    Package listViewPackage;
     CardView cvHotel;
     CardView cvFood;
     Button btnBookNow;
+
+    //the on create method
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_book2);
+
+        //bind the control variables to the XML activity controls
         requestQueue = Volley.newRequestQueue(this);
         ivPackageBook = findViewById(R.id.ivPackageBook);
         tvPackageBookPgkName = findViewById(R.id.tvPackageBookPgkName);
@@ -71,9 +81,11 @@ public class PackageBookActivity2 extends AppCompatActivity {
         tvFoodDetails = findViewById(R.id.tvFoodDetails);
 
         Intent intent = getIntent();
-        //this is the package that was passed from the PackageSelect activity
+        //retrieve the package object that was passed from the PackageSelect activity and
+        //create a new package
         Package newPackage = (Package) intent.getSerializableExtra("packagePassed");
 
+        //execute the thread and pass the retrieved package id to the getPackage class
         Executors.newSingleThreadExecutor().execute(new GetPackage(newPackage.getPackageId()));
 
         btnBookNow.setOnClickListener(new View.OnClickListener() {
@@ -86,16 +98,6 @@ public class PackageBookActivity2 extends AppCompatActivity {
             }
         });
 
-
-        //ivPackageBook.setImageResource(res_image);
-        //tvPackageBookPgkName.setText(newPackage.getPkgName());
-        //int res_image = newPackage.getPkgImageMain();
-        //Bundle bundle = getIntent().getExtras();
-        //if (bundle!=null) {
-            //int res_image = bundle.getInt("imageNew");
-            //ivPackageBook.setImageResource(res_image);
-        //}
-
         ImageButton imgBtn = (ImageButton)findViewById(R.id.imgBtnBack);
         imgBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -107,6 +109,9 @@ public class PackageBookActivity2 extends AppCompatActivity {
         });
 
     }
+
+    //this class retrieves data from the database for the packages
+    //and displays the information in the page text view etc.
     class GetPackage implements Runnable {
         private int packageId;
 
@@ -118,6 +123,7 @@ public class PackageBookActivity2 extends AppCompatActivity {
         public void run() {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
+            //make the service call to the webservice
             //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
 //           String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackage/" + packageId;
             String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getpackage/" + packageId; //For Ehsans Testing
@@ -127,10 +133,11 @@ public class PackageBookActivity2 extends AppCompatActivity {
                 public void onResponse(String response) {
                     VolleyLog.wtf(response, "utf-8");
 
-                    //convert JSON data from response string into an Agent
+                    //convert JSON data from response string into a package object
                     JSONObject pkg = null;
                     try {
-                        pkg = new JSONObject(response);
+                        pkg = new JSONObject(response); //set the package object to pkg
+                        //create a object to pass to the checkout page
                         checkoutPackage = new Package(pkg.getInt("packageId"),pkg.getString("pkgName"),
                                 pkg.getDouble("pkgBasePrice"), pkg.getString("pkgStartDate"), pkg.getString("pkgEndDate"),
                                 pkg.getDouble("pkgAgencyCommission"));
@@ -139,14 +146,17 @@ public class PackageBookActivity2 extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    //update ListView with the adapter of Agents
+                    //update ListView with the adapter of Packages
                     final JSONObject finalPkg = pkg;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
+
+                                //set all the controls to display the retrieved data
                                 tvPackageBookPgkName.setText(finalPkg.getString("pkgName") + "");
                                 String mainimageName = finalPkg.getString("pkgImageMain");
+                                //take the image name retrieved from the database and finds it's resource id
                                 int imageMainId = getResources().getIdentifier(mainimageName, "drawable", getPackageName());
                                 ivPackageBook.setImageResource(imageMainId);
                                 tvPackageCostDesc.setText(finalPkg.getString("pkgCostDesc") + "");
@@ -172,6 +182,8 @@ public class PackageBookActivity2 extends AppCompatActivity {
                                 //Log.d("doug", "RESOURCE: " + imageHotel);
                                 int imageHotelId = getResources().getIdentifier(imageHotel, "drawable", getPackageName());
                                 //Log.d("doug", "RESOURCE: " + imageHotelId);
+
+                                //if a hotel image exists in database, then display the hotel cardview
                                 if (imageHotelId != 0) {
                                     cvHotel.setVisibility(View.VISIBLE);
                                     ivHotel.setImageResource(imageHotelId);
@@ -179,9 +191,8 @@ public class PackageBookActivity2 extends AppCompatActivity {
                                 }
 
                                 String imageFood = finalPkg.getString("pkgImageFood");
-                                //Log.d("doug", "RESOURCE: " + imageHotel);
                                 int imageFoodId = getResources().getIdentifier(imageFood, "drawable", getPackageName());
-                                //Log.d("doug", "RESOURCE: " + imageHotelId);
+                                //if the image exist in the database for the food, then display the food cardview
                                 if (imageFoodId != 0) {
                                     cvFood.setVisibility(View.VISIBLE);
                                     ivFood.setImageResource(imageFoodId);

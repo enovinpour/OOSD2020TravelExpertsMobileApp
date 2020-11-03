@@ -1,5 +1,11 @@
 package org.ehsan.travelexpertsoosd;
 
+/*
+Author: Jessy Perreault
+Class Name: PROJ-207-OOS
+Date: November 2020
+ */
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -108,9 +114,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                         custId, firstName, lastName, address, city, prov, postal, country, homePhone, phone, email, agentId, custPassword
                 );
                 if (email.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) { //checks if email is empty
-//                    lblEmail.setTextColor(Color.RED);
-//                    lblFirstName.setTextColor(Color.RED);
-//                    lblLastName.setTextColor(Color.RED);
                     txtValidator.setText("Please fill in all required fields *");
                 } else if (!isValidEmailNoAlert(email)) { //checks if email is valid
                     lblEmail.setText("Email * invalid email *");
@@ -234,7 +237,6 @@ public class ProfileEditActivity extends AppCompatActivity {
             requestQueue.add(jsonObjectRequest);
             Intent intentProfileMain = new Intent(ProfileEditActivity.this, ProfileMainActivity.class);
             finish();
-//                intentProfileMain.getSerializableExtra("customer");
             startActivity(intentProfileMain);
         }
     }

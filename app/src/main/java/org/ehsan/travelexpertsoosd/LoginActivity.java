@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Model.CreditCard;
 import Model.Customer;
 
 import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
@@ -131,8 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     VolleyLog.wtf(response, "utf-8");
                     //convert JSON data from response string into an Agent
-                    //create a json array to recieve the response- loop through it to make it into an object
-
+                    //create a json array to receive the response- loop through it to make it into an object
                     String emailfromUrl = "";
                     String passwordfromUrl = "";
                     int idfromUrl = 0;
@@ -174,7 +172,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     Log.d("successlogin", "login successfull");
                                 } else {
-                                    //failure case - some sort of message
+                                    //failure, show user message that indicated invalid login credentials
                                     lbl_password.setText("Password * invalid password *");
                                     lbl_password.setTextColor(Color.RED);
 

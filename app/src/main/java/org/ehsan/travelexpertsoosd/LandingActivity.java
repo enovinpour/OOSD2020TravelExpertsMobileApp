@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+///AUTHOR : Crystal Champion ///
 public class LandingActivity extends AppCompatActivity {
     View view;
     ConstraintLayout id_layout;
@@ -36,8 +38,8 @@ Intent intent;
         intent = new Intent(LandingActivity.this, LoginActivity.class);
         img_landing.setImageResource(R.drawable.hikerlanding);
         img_logo.setImageResource(R.drawable.expertlogo);
-//        ArrayCarousel();
 
+            //click 'start now' -> load login
         btn_startnow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,24 +47,6 @@ Intent intent;
             }
         });
     }
-//        public void ArrayCarousel () {
-//            final String[] slogans = {"Explore Alberta", "Make Memories", "Hidden Gems in Your Pocket", "Travel Experts"};
-//            new java.util.Timer().schedule(
-//                    new java.util.TimerTask() {
-//                        @Override
-//                        public void run() {
-//                            int i;
-//                            do {
-//                                for (i = 0; i < 30; i++) {
-//                                    lbl_slogan.setText(slogans[i]);
-//                                }
-//                            } while (i > slogans.length);
-//
-//                        }
-//                    },
-//                    1000
-//            );
-
         }
 
 
