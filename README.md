@@ -1,4 +1,10 @@
 # OOSD2020TravelExpertsMobileApp
 
-Meeting 2:
-- Txt File Created for all added Queries for MySQL
+Created by:
+Ehsan Novin-Pour,
+Crystal Champion,
+Doug Cameron,
+Jessy Perreault,
+Sean Burman
+
+This app was created using android studio, MS SQL and eclipse for a school final project. 
