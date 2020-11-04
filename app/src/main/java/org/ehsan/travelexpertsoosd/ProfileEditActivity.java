@@ -133,7 +133,8 @@ public class ProfileEditActivity extends AppCompatActivity {
         public void run() {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist/" + custId;
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/" + custId;
+//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomer/" + custId;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -187,7 +188,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         @Override
         public void run() {
             //send JSON data to REST service
-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/postcustomer/";
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/postcustomer/";
             JSONObject obj = new JSONObject();
             try {
                 obj.put("customerId", customer.getCustId());

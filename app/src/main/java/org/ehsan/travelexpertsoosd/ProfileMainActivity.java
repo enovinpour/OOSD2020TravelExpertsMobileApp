@@ -102,7 +102,7 @@ public class ProfileMainActivity extends AppCompatActivity {
         public void run() {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getcustomerlist/" + custId;
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/" + custId;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

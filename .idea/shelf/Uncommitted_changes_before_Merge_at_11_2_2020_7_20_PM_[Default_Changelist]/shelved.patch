@@ -1,0 +1,392 @@
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.Response.ErrorListener;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.JsonObjectRequest;\r\nimport com.android.volley.toolbox.StringRequest;\r\nimport com.android.volley.toolbox.Volley;\r\nimport com.google.android.material.appbar.CollapsingToolbarLayout;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.appcompat.widget.Toolbar;\r\n\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.sql.Date;\r\nimport java.text.ParseException;\r\nimport java.text.SimpleDateFormat;\r\nimport java.time.LocalDate;\r\nimport java.util.Calendar;\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.Booking;\r\nimport Model.BookingDetail;\r\nimport Model.CreditCard;\r\nimport Model.Customer;\r\nimport Model.Package;\r\n\r\npublic class CreditCardActivity extends AppCompatActivity {\r\n    private TextView tvPrice;\r\n    private EditText etCardNumber, etCardName, etExpiry, etCode, etFirstName,\r\n        etLastName, etAddress1, etEmail, etPostal, etCity, etCountry, etPhone;\r\n    private Button btnPayment;\r\n    private RequestQueue requestQueue;\r\n    private Customer customer;\r\n    private SharedPreferences pref;\r\n    private int id, qty, packageId;\r\n    private double price;\r\n    private String custFirstName, custLastName, custCardHolderName, custCardNumber, expiryDate\r\n        ,security, custEmail, custAddress, custCity, custPostal, custCountry, custPhone, expiryDateFormat;\r\n    private Booking booking;\r\n    private BookingDetail bd;\r\n    private Package checkoutPackage;\r\n    private Date date;\r\n\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_credit_card);\r\n        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);\r\n        setSupportActionBar(toolbar);\r\n        CollapsingToolbarLayout toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);\r\n        toolBarLayout.setTitle(\"Credit Card\");\r\n//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);\r\n\r\n        Intent intent = getIntent();\r\n        price = intent.getDoubleExtra(\"Total\",0);\r\n        qty = intent.getIntExtra(\"qty\",1);\r\n        Package checkoutPackage = (Package) intent.getSerializableExtra(\"passedObject\");\r\n        packageId = checkoutPackage.getPackageId();\r\n\r\n        requestQueue = Volley.newRequestQueue(this);\r\n        pref = getSharedPreferences(\"user_details\",MODE_PRIVATE);\r\n\r\n        tvPrice = findViewById(R.id.tvPrice);\r\n        etCardNumber = findViewById(R.id.etCardNumber);\r\n        etCardName = findViewById(R.id.etCardName);\r\n        etExpiry = findViewById(R.id.etExpiry);\r\n        etCode = findViewById(R.id.etCode);\r\n        etFirstName = findViewById(R.id.etFirstName);\r\n        etLastName = findViewById(R.id.etLastName);\r\n        etEmail = findViewById(R.id.etEmail);\r\n        etAddress1 = findViewById(R.id.etAdress1);\r\n        etPostal = findViewById(R.id.etPostal);\r\n        etCity = findViewById(R.id.etCity);\r\n        etCountry = findViewById(R.id.etCountry);\r\n        btnPayment = findViewById(R.id.btnPayment);\r\n        etPhone = findViewById(R.id.etPhone);\r\n\r\n        id = pref.getInt(\"id\", 1);\r\n        Executors.newSingleThreadExecutor().execute(new GetCustomer());\r\n\r\n//        Executors.newSingleThreadExecutor().execute(new GetCredit());\r\n\r\n        tvPrice.setText(\"$\" + price);\r\n\r\n\r\n//        long dateLong = System.currentTimeMillis();\r\n//        date = new java.sql.Date(dateLong);\r\n//        Log.d(\"Ehsan\", \"onCreate: \" + date);\r\n\r\n        java.util.Date utilDate = new java.util.Date();\r\n        date = new java.sql.Date(utilDate.getTime());\r\n        Log.d(\"Ehsan\", \"onCreate: \" + date);\r\n\r\n\r\n        //Needs to be done tomorrow\r\n        btnPayment.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                custCardHolderName = etCardName.getText().toString();\r\n                custCardNumber = etCardNumber.getText().toString();\r\n                expiryDate = etExpiry.getText().toString();\r\n                security = etCode.getText().toString();\r\n                custFirstName = etFirstName.getText().toString();\r\n                custLastName = etLastName.getText().toString();\r\n                custEmail = etEmail.getText().toString();\r\n                custPostal = etPostal.getText().toString();\r\n                custCountry = etCountry.getText().toString();\r\n                custPhone = etPhone.getText().toString();\r\n\r\n                if (!custCardNumber.isEmpty() && !custCardNumber.isEmpty() && !expiryDate.isEmpty()\r\n                        && !security.isEmpty() && !custFirstName.isEmpty() && !custLastName.isEmpty() &&\r\n                        !custEmail.isEmpty() && !custPostal.isEmpty() && !custCountry.isEmpty() &&\r\n                        !custPhone.isEmpty()) {\r\n                    Executors.newSingleThreadExecutor().execute(new PutBooking());\r\n\r\n                } else {\r\n                    Toast toast = Toast.makeText(getApplicationContext(), \"Please Fill Out All Fields Correctly\", Toast.LENGTH_SHORT);\r\n                    toast.show();\r\n                }\r\n            }\r\n        });\r\n\r\n    }\r\n\r\n    class GetCustomer implements Runnable {\r\n        @Override\r\n        public void run() {\r\n            StringBuffer buffer = new StringBuffer();\r\n            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/loginId/\" + id;\r\n            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response,\"utf-8\");\r\n\r\n                    try {\r\n//                        JSONArray jsonArray = new JSONArray(response);\r\n//                        JSONObject object = jsonArray.getJSONObject(0);\r\n\r\n                        JSONObject object = new JSONObject(response);\r\n                        Log.d(\"ehsan\", \"onResponse: \" + object);\r\n\r\n                        customer = new Customer(object.getInt(\"customerId\"), object.getString(\"custFirstName\"),\r\n                                object.getString(\"custLastName\"),object.getString(\"custAddress\"), object.getString(\"custCity\"),\r\n                                object.getString(\"custProv\"), object.getString(\"custPostal\"), object.getString(\"custCountry\"),\r\n                                object.getString(\"custHomePhone\"), object.getString(\"custBusPhone\"), object.getString(\"custEmail\"),\r\n                                object.getInt(\"points\"), object.getString(\"password\"));\r\n\r\n                        etFirstName.setText(customer.getCustFirstName());\r\n                        etLastName.setText(customer.getCustLastName());\r\n                        etAddress1.setText(customer.getCustAddress());\r\n                        etEmail.setText(customer.getCustEmail());\r\n                        etPostal.setText(customer.getCustPostal());\r\n                        etCity.setText(customer.getCustCity());\r\n                        etCountry.setText(customer.getCustCountry());\r\n                        etPhone.setText(customer.getCustBusPhone());\r\n\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n\r\n                }\r\n            }, new ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n\r\n\r\n            // Credit Card\r\n\r\n            buffer = new StringBuffer();\r\n            url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcc/\" + id;\r\n            stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response,\"utf-8\");\r\n\r\n                    try{\r\n\r\n                        JSONArray jsonArray = new JSONArray(response);\r\n                        JSONObject object = jsonArray.getJSONObject(0);\r\n                        CreditCard cc = new CreditCard(object.getInt(\"creditCardId\"),\r\n                                object.getString(\"CCName\"), object.getString(\"CCNumber\"),\r\n                                object.getString(\"CCExpiry\"),object.getInt(\"customerId\"));\r\n\r\n                        etCardName.setText(customer.getCustFirstName() + \" \" + customer.getCustLastName());\r\n                        etCardNumber.setText(cc.getCcNumber());\r\n\r\n                        SimpleDateFormat format = new SimpleDateFormat(\"MMM dd, yyyy\");\r\n\r\n                        try {\r\n                            java.util.Date exipryDateUnformat = format.parse(cc.getCcExpiry());\r\n                            format.applyPattern(\"MM/yy\");\r\n                            expiryDateFormat = format.format(exipryDateUnformat);\r\n\r\n                        } catch (ParseException e) {\r\n                            e.printStackTrace();\r\n                        }\r\n\r\n                        etExpiry.setText(expiryDateFormat);\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n                }\r\n            }, new ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n\r\n        }\r\n    }\r\n\r\n    class PutBooking implements Runnable {\r\n        private Booking booking;\r\n\r\n        @Override\r\n        public void run() {\r\n            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/putbooking\";\r\n            JSONObject obj = new JSONObject();\r\n            try {\r\n                obj.put(\"bookingDate\", date);\r\n                obj.put(\"bookingNo\", \"12345\");\r\n                obj.put(\"travelerCount\", qty);\r\n                obj.put(\"customerId\", customer.getCustId());\r\n                obj.put(\"tripTypeId\", \"L\");\r\n                obj.put(\"packageId\", packageId);\r\n\r\n            } catch (JSONException e) {\r\n                e.printStackTrace();\r\n            }\r\n\r\n            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,\r\n                    new Response.Listener<JSONObject>() {\r\n                        @Override\r\n                        public void onResponse(final JSONObject response) {\r\n                            Log.d(\"Ehsan\", \"response\" + response);\r\n                            VolleyLog.wtf(response.toString(), \"utf-8\");\r\n\r\n                            runOnUiThread(new Runnable() {\r\n                                @Override\r\n                                public void run() {\r\n                                    try {\r\n                                        Toast.makeText(getApplicationContext(), response.getString(\"message\"), Toast.LENGTH_LONG).show();\r\n\r\n                                        Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);\r\n                                        startActivity(intent);\r\n                                    } catch (JSONException e) {\r\n                                        e.printStackTrace();\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    },\r\n                        new Response.ErrorListener(){\r\n                        @Override\r\n                        public void onErrorResponse(VolleyError error) {\r\n                            Log.d(\"Ehsan\", \"error=\" + error);\r\n                            VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                        }\r\n                    });\r\n                requestQueue.add(jsonObjectRequest);\r\n        }\r\n    }\r\n}\r\n\r\n//    class GetCredit implements Runnable {\r\n//        @Override\r\n//        public void run() {\r\n//\r\n//            StringBuffer buffer = new StringBuffer();\r\n//            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getcc/\" + id;\r\n//            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n//                @Override\r\n//                public void onResponse(String response) {\r\n//                    VolleyLog.wtf(response,\"utf-8\");\r\n//\r\n//                    try{\r\n//\r\n//                        JSONArray jsonArray = new JSONArray(response);\r\n//                        JSONObject object = jsonArray.getJSONObject(0);\r\n//                        CreditCard cc = new CreditCard(object.getInt(\"creditCardId\"),\r\n//                                object.getString(\"CCName\"), object.getString(\"CCNumber\"),\r\n//                                object.getString(\"CCExpiry\"),object.getInt(\"customerId\"));\r\n//\r\n//                        etCardName.setText(customer.getCustFirstName() + \" \" + customer.getCustLastName());\r\n//                        etCardNumber.setText(cc.getCcNumber());\r\n//                        etExpiry.setText(cc.getCcExpiry());\r\n//\r\n//                    } catch (JSONException e) {\r\n//                        e.printStackTrace();\r\n//                    }\r\n//\r\n//                }\r\n//            }, new Response.ErrorListener() {\r\n//                @Override\r\n//                public void onErrorResponse(VolleyError error) {\r\n//                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n//                }\r\n//            });\r\n//\r\n//            requestQueue.add(stringRequest);\r\n//        }\r\n//    }
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/CreditCardActivity.java	(date 1604038403594)
+@@ -70,6 +70,7 @@
+         toolBarLayout.setTitle("Credit Card");
+ //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+ 
++        qty = 1;
+         Intent intent = getIntent();
+         price = intent.getDoubleExtra("Total",0);
+         qty = intent.getIntExtra("qty",1);
+@@ -150,7 +151,6 @@
+                 @Override
+                 public void onResponse(String response) {
+                     VolleyLog.wtf(response,"utf-8");
+-
+                     try {
+ //                        JSONArray jsonArray = new JSONArray(response);
+ //                        JSONObject object = jsonArray.getJSONObject(0);
+@@ -190,6 +190,14 @@
+             requestQueue.add(stringRequest);
+ 
+ 
++            //To allow the app to have enough time to parse the first JSON Object. This solved the
++            //errors that we were getting which were suspected to be due to timing.
++            try {
++                Thread.sleep(1000);
++            } catch (InterruptedException e) {
++                e.printStackTrace();
++            }
++
+             // Credit Card
+ 
+             buffer = new StringBuffer();
+@@ -240,6 +248,7 @@
+         }
+     }
+ 
++
+     class PutBooking implements Runnable {
+         private Booking booking;
+ 
+@@ -272,7 +281,7 @@
+                                     try {
+                                         Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_LONG).show();
+ 
+-                                        Intent intent = new Intent(getApplicationContext(), PackageSelectActivity.class);
++                                        Intent intent = new Intent(getApplicationContext(), ProfileMainActivity.class);
+                                         startActivity(intent);
+                                     } catch (JSONException e) {
+                                         e.printStackTrace();
+@@ -293,6 +302,7 @@
+     }
+ }
+ 
++
+ //    class GetCredit implements Runnable {
+ //        @Override
+ //        public void run() {
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.app.Activity;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.graphics.Color;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.view.inputmethod.InputMethodManager;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageButton;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.JsonObjectRequest;\r\nimport com.android.volley.toolbox.StringRequest;\r\nimport com.android.volley.toolbox.Volley;\r\n\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.Customer;\r\n\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidPassword;\r\n\r\npublic class ProfileEditActivity extends AppCompatActivity {\r\n    Button btnSave;\r\n    ImageButton btnEditBack;\r\n    TextView txtValidator, lblFirstName, lblLastName, lblEmail, lblPhone, lblAddress;\r\n    EditText txtFirstName, txtLastName, txtUserEmail, txtUserPhone, txtUserAddress;\r\n    RequestQueue requestQueue;\r\n    SharedPreferences prf;\r\n    Customer customer;\r\n    int agentId = 1;\r\n    int custId;\r\n    String custCity = \"\";\r\n    String custProv = \"\";\r\n    String custPostal = \"\";\r\n    String custCountry = \"\";\r\n    String custHomePhone = \"\";\r\n    String custPassword = \"\";\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_profile_edit);\r\n\r\n        prf = getSharedPreferences(\"user_details\",MODE_PRIVATE);\r\n        custId = prf.getInt(\"id\", 1);\r\n\r\n        requestQueue = Volley.newRequestQueue(this);\r\n\r\n        btnSave = findViewById(R.id.btnSave);\r\n        btnEditBack = findViewById(R.id.btnEditBack);\r\n        txtFirstName = findViewById(R.id.txtFirstName);\r\n        txtLastName = findViewById(R.id.txtLastName);\r\n        txtUserEmail = findViewById(R.id.txtUserEmail);\r\n        txtUserPhone = findViewById(R.id.txtUserPhone);\r\n        txtUserAddress = findViewById(R.id.txtUserAddress);\r\n        txtValidator = findViewById(R.id.txtValidator);\r\n        lblFirstName = findViewById(R.id.lblFirstName);\r\n        lblLastName = findViewById(R.id.lblLastName);\r\n        lblPhone = findViewById(R.id.lblPhone);\r\n        lblAddress = findViewById(R.id.lblAddress);\r\n        lblEmail = findViewById(R.id.lblEmail);\r\n        btnEditBack = findViewById(R.id.btnEditBack);\r\n        btnEditBack.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                finish();\r\n            }\r\n        });\r\n        Intent intent = getIntent();\r\n        customer = (Customer) intent.getSerializableExtra(\"customer\");\r\n\r\n        Executors.newSingleThreadExecutor().execute(new GetCustomer());\r\n\r\n\r\n\r\n        btnSave.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n\r\n                String firstName = txtFirstName.getText().toString();\r\n                String lastName = txtLastName.getText().toString();\r\n                String address = txtUserAddress.getText().toString();\r\n                String city = custCity;\r\n                String prov = custProv;\r\n                String postal = custPostal;\r\n                String country = custCountry;\r\n                String homePhone = custHomePhone;\r\n                String phone = txtUserPhone.getText().toString();\r\n                String email = txtUserEmail.getText().toString();\r\n                Customer customer = new Customer(\r\n                        custId, firstName, lastName, address, city, prov, postal, country, homePhone, phone, email, agentId, custPassword\r\n                );\r\n                if (email.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) { //checks if email is empty\r\n//                    lblEmail.setTextColor(Color.RED);\r\n//                    lblFirstName.setTextColor(Color.RED);\r\n//                    lblLastName.setTextColor(Color.RED);\r\n                    txtValidator.setText(\"Please fill in all required fields *\");\r\n                } else if (!isValidEmailNoAlert(email)) { //checks if email is valid\r\n                    lblEmail.setText(\"Email * invalid email *\");\r\n                    lblEmail.setTextColor(Color.RED);\r\n                } else\r\n                {\r\n                    //else, all fields are valid\r\n                    Executors.newSingleThreadExecutor().execute(new PostCustomer(customer));\r\n                }\r\n\r\n            }\r\n        });\r\n    }\r\n\r\n    class GetCustomer implements Runnable {\r\n        @Override\r\n        public void run() {\r\n            //retrieve JSON data from REST service into StringBuffer\r\n            StringBuffer buffer = new StringBuffer();\r\n            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/\" + custId;\r\n            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {\r\n                @Override\r\n                public void onResponse(String response) {\r\n                    VolleyLog.wtf(response, \"utf-8\");\r\n\r\n                    //convert JSON data from response string into an Customer\r\n\r\n                    try {\r\n                        JSONArray jsonArray = new JSONArray(response);\r\n                        JSONObject object = jsonArray.getJSONObject(0);\r\n                        Customer cust = new Customer(\r\n                                    object.getInt(\"CustomerId\"), object.getString(\"CustFirstName\"), object.getString(\"CustLastName\"),\r\n                                    object.getString(\"CustAddress\"), object.getString(\"CustCity\"), object.getString(\"CustProv\"),\r\n                                    object.getString(\"CustPostal\"), object.getString(\"CustCountry\"), object.getString(\"CustHomePhone\"),\r\n                                    object.getString(\"CustBusPhone\"), object.getString(\"CustEmail\"), object.getInt(\"AgentId\"), object.getString(\"Password\"));\r\n                        custId = cust.getCustId();\r\n                        txtFirstName.setText(cust.getCustFirstName());\r\n                        txtLastName.setText(cust.getCustLastName());\r\n                        txtUserAddress.setText(cust.getCustAddress());\r\n                        custCity = cust.getCustCity();\r\n                        custProv = cust.getCustProv();\r\n                        custPostal = cust.getCustPostal();\r\n                        custCountry = cust.getCustCountry();\r\n                        custHomePhone = cust.getCustHomePhone();\r\n                        txtUserPhone.setText(cust.getCustBusPhone());\r\n                        txtUserEmail.setText(cust.getCustEmail());\r\n                        agentId = cust.getAgentId();\r\n                        custPassword = cust.getPassword();\r\n\r\n                    } catch (JSONException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n\r\n                }\r\n            }, new Response.ErrorListener() {\r\n                @Override\r\n                public void onErrorResponse(VolleyError error) {\r\n                    VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                }\r\n            });\r\n\r\n            requestQueue.add(stringRequest);\r\n        }\r\n    }\r\n\r\n    class PostCustomer implements Runnable {\r\n        private Customer customer;\r\n        public PostCustomer(Customer customer) {\r\n            this.customer = customer;\r\n        }\r\n        @Override\r\n        public void run() {\r\n            //send JSON data to REST service\r\n            String url = \"http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/postcustomer/\";\r\n            JSONObject obj = new JSONObject();\r\n            try {\r\n                obj.put(\"customerId\", customer.getCustId());\r\n                obj.put(\"custFirstName\", customer.getCustFirstName()+ \"\");\r\n                obj.put(\"custLastName\", customer.getCustLastName() + \"\");\r\n                obj.put(\"custAddress\", customer.getCustAddress() + \"\");\r\n                obj.put(\"custCity\", customer.getCustCity() + \"\");\r\n                obj.put(\"custProv\", customer.getCustProv() + \"\");\r\n                obj.put(\"custPostal\", customer.getCustPostal() + \"\");\r\n                obj.put(\"custCountry\", customer.getCustCountry() + \"\");\r\n                obj.put(\"custHomePhone\", customer.getCustHomePhone() + \"\");\r\n                obj.put(\"custBusPhone\", customer.getCustBusPhone() + \"\");\r\n                obj.put(\"custEmail\", customer.getCustEmail() + \"\");\r\n                obj.put(\"agentId\", customer.getAgentId());\r\n                obj.put(\"password\", customer.getPassword());\r\n\r\n\r\n            } catch (JSONException e) {\r\n                e.printStackTrace();\r\n            }\r\n            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, obj,\r\n                    new Response.Listener<JSONObject>() {\r\n                        @Override\r\n                        public void onResponse(final JSONObject response) {\r\n                            Log.d(\"crystal\", \"response=\" + response);\r\n                            VolleyLog.wtf(response.toString(), \"utf-8\");\r\n                            //display result message\r\n                            runOnUiThread(new Runnable() {\r\n                                @Override\r\n                                public void run() {\r\n                                    try {\r\n                                        Toast.makeText(getApplicationContext(), response.getString(\"message\"), Toast.LENGTH_LONG).show();\r\n                                    } catch (JSONException e) {\r\n                                        e.printStackTrace();\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    },\r\n                    new Response.ErrorListener() {\r\n                        @Override\r\n                        public void onErrorResponse(VolleyError error) {\r\n                            Log.d(\"harv\", \"error=\" + error);\r\n                            VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                        }\r\n                    });\r\n            requestQueue.add(jsonObjectRequest);\r\n            Intent intentProfileMain = new Intent(ProfileEditActivity.this, ProfileMainActivity.class);\r\n            finish();\r\n//                intentProfileMain.getSerializableExtra(\"customer\");\r\n            startActivity(intentProfileMain);\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/ProfileEditActivity.java	(date 1604030996082)
+@@ -131,6 +131,7 @@
+             //retrieve JSON data from REST service into StringBuffer
+             StringBuffer buffer = new StringBuffer();
+             String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomerlist/" + custId;
++//            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getcustomer/" + custId;
+             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                 @Override
+                 public void onResponse(String response) {
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/CheckoutActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.text.format.DateFormat;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.NumberPicker;\r\nimport android.widget.TextView;\r\n\r\nimport java.text.ParseException;\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.Calendar;\r\nimport java.util.Currency;\r\nimport java.util.Date;\r\n\r\nimport Model.Package;\r\n\r\npublic class CheckoutActivity extends AppCompatActivity {\r\n\r\n    private String packageName;\r\n    private String tripStart;\r\n    private String tripEnd;\r\n    private double price;\r\n    private double GST;\r\n    private double total;\r\n    private int qty;\r\n    private Package checkoutPackage;\r\n    private Date startDate, endDate;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_checkout);\r\n        getSupportActionBar().setDisplayHomeAsUpEnabled(true);\r\n        getSupportActionBar().setDisplayShowHomeEnabled(true);\r\n        getSupportActionBar().setTitle(\"Checkout\");\r\n\r\n        Intent intent = getIntent();\r\n        //this is the package that was passed from the PackageSelect activity\r\n        checkoutPackage = (Package) intent.getSerializableExtra(\"passedObject\");\r\n\r\n        packageName = checkoutPackage.getPkgName();\r\n        tripStart = checkoutPackage.getPkgStartDate();\r\n        tripEnd = checkoutPackage.getPkgEndDate();\r\n\r\n        SimpleDateFormat format = new SimpleDateFormat(\"MMM dd, yyyy\");\r\n\r\n        try {\r\n             startDate = format.parse(tripStart);\r\n             endDate = format.parse(tripEnd);\r\n             format.applyPattern(\"dd/MM/yyyy\");\r\n             tripStart = format.format(startDate);\r\n             tripEnd = format.format(endDate);\r\n\r\n        } catch (ParseException e) {\r\n            e.printStackTrace();\r\n        }\r\n\r\n\r\n//        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getApplicationContext());\r\n\r\n        TextView tvCity = findViewById(R.id.tvCity);\r\n        TextView tvTripDate = findViewById(R.id.tvTripDate);\r\n        final NumberPicker npQty = findViewById(R.id.npQty);\r\n        final TextView tvPrice = findViewById(R.id.tvPrice);\r\n        final TextView tvGST = findViewById(R.id.tvGST);\r\n        final TextView tvTotal = findViewById(R.id.tvTotal);\r\n        final Button btnPay = findViewById(R.id.btnPay);\r\n\r\n        price = checkoutPackage.getPkgBasePrice() + checkoutPackage.getPkgAgencyCommission();\r\n        GST = price * 0.05;\r\n        total = price + GST;\r\n        qty = npQty.getValue();\r\n\r\n        npQty.setMaxValue(4);\r\n        npQty.setMinValue(1);\r\n\r\n        npQty.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {\r\n            @Override\r\n            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {\r\n                qty = npQty.getValue();\r\n                price = (checkoutPackage.getPkgBasePrice() + checkoutPackage.getPkgAgencyCommission()) * qty;\r\n                GST = price * 0.05;\r\n                total = price + GST;\r\n\r\n                tvPrice.setText(\"$\" + String.valueOf(price));\r\n                tvGST.setText(\"$\" + String.valueOf(GST));\r\n                tvTotal.setText(\"$\" + String.valueOf(total));\r\n            }\r\n        });\r\n\r\n        tvCity.setText(packageName);\r\n        tvTripDate.setText(tripStart);\r\n        tvPrice.setText(\"Price:   $\" + String.valueOf(price));\r\n        tvGST.setText(\"GST:   $\" + String.valueOf(GST));\r\n        tvTotal.setText(\"Total:   $\" + String.valueOf(total));\r\n\r\n        btnPay.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(getApplicationContext(), CreditCardActivity.class);\r\n                intent.putExtra(\"Total\", total);\r\n                intent.putExtra(\"passedObject\", checkoutPackage);\r\n                intent.putExtra(\"qty\",qty);\r\n                startActivity(intent);\r\n            }\r\n        });\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/CheckoutActivity.java	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/CheckoutActivity.java	(date 1604066741390)
+@@ -86,9 +86,9 @@
+                 GST = price * 0.05;
+                 total = price + GST;
+ 
+-                tvPrice.setText("$" + String.valueOf(price));
+-                tvGST.setText("$" + String.valueOf(GST));
+-                tvTotal.setText("$" + String.valueOf(total));
++                tvPrice.setText("Price:   $" + String.valueOf(price));
++                tvGST.setText("GST:   $" + String.valueOf(GST));
++                tvTotal.setText("Total:   $" + String.valueOf(total));
+             }
+         });
+ 
+Index: app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.ehsan.travelexpertsoosd;\r\n\r\nimport android.content.Intent;\r\nimport android.graphics.Color;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.android.volley.Request;\r\nimport com.android.volley.RequestQueue;\r\nimport com.android.volley.Response;\r\nimport com.android.volley.VolleyError;\r\nimport com.android.volley.VolleyLog;\r\nimport com.android.volley.toolbox.JsonObjectRequest;\r\nimport com.android.volley.toolbox.Volley;\r\n\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport java.util.concurrent.Executors;\r\n\r\nimport Model.Customer;\r\n\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;\r\nimport static org.ehsan.travelexpertsoosd.Validator.isValidPassword;\r\n\r\npublic class RegisterActivity extends AppCompatActivity {\r\n    RequestQueue requestQueue;\r\n    View view;\r\n    EditText txt_firstName, txt_lastName, txt_initial, txt_custPhone, txt_email, txt_password;\r\n    Button btn_submit;\r\n    TextView lbl_email, lbl_password, lbl_firstName, lbl_lastName, lbl_initial, lbl_phoneNumber;\r\n    Intent toLogin;\r\n\r\n    String address = \"Unset\";\r\n    String city = \"Unset\";\r\n    String prov = \"AB\";\r\n    String postal = \"Unset\";\r\n    String country = \"Unset\";\r\n    String homePhone = \"Unset\";\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_register);\r\n        requestQueue = Volley.newRequestQueue(this);\r\n        toLogin = new Intent(RegisterActivity.this, LoginActivity.class);\r\n        txt_firstName = findViewById(R.id.txt_firstName);\r\n        txt_initial = findViewById(R.id.txt_initial);\r\n        txt_lastName = findViewById(R.id.txt_lastName);\r\n        txt_custPhone = findViewById(R.id.txt_custPhone);\r\n        txt_email = findViewById(R.id.txt_email);\r\n        txt_password = findViewById(R.id.txt_password);\r\n\r\n        lbl_firstName = findViewById(R.id.lbl_firstName);\r\n        lbl_initial = findViewById(R.id.lbl_initial);\r\n        lbl_lastName = findViewById(R.id.lbl_lastName);\r\n        lbl_phoneNumber = findViewById(R.id.lbl_phoneNumber);\r\n        lbl_email = findViewById(R.id.lbl_email);\r\n        lbl_password = findViewById(R.id.lbl_password);\r\n\r\n        btn_submit = findViewById(R.id.btn_submit);\r\n\r\n\r\n        btn_submit.setOnClickListener(new View.OnClickListener() {\r\n                                          @Override\r\n                                          public void onClick(View v) {\r\n                                              String firstName = txt_firstName.getText().toString();\r\n                                              String lastName = txt_lastName.getText().toString();\r\n                                              String phone = txt_custPhone.getText().toString();\r\n                                              String email = txt_email.getText().toString();\r\n                                              String password = txt_password.getText().toString();\r\n\r\n                                              if (!EmailValidation(email) || !PhoneNumberValidation(phone) || !FirstNameValidation(firstName) || !LastNameValidation(lastName) || !PasswordValidation(password)) {\r\n\r\n                                                  if (!EmailValidation(email)) {\r\n                                                      EmailValidation(email);\r\n                                                  }\r\n\r\n                                                  if (!PhoneNumberValidation(phone)) {\r\n                                                      PhoneNumberValidation(phone);\r\n                                                  }\r\n\r\n                                                  if (!FirstNameValidation(firstName)) {\r\n                                                      FirstNameValidation(firstName);\r\n\r\n                                                  }\r\n                                                  if (!LastNameValidation(lastName)) {\r\n                                                      LastNameValidation(lastName);\r\n                                                  }\r\n\r\n                                                  if (!PasswordValidation(password)) {\r\n                                                      PasswordValidation(password);\r\n                                                  }\r\n                                              } else {\r\n\r\n                                                  {\r\n                                                  Customer customer = new Customer(\r\n                                                          firstName,\r\n                                                          lastName,\r\n                                                          phone,\r\n                                                          email,\r\n                                                          password\r\n                                                  );\r\n                                                  Log.d(\"customer crystal \", customer.getCustFirstName());\r\n\r\n                                                  Executors.newSingleThreadExecutor().execute(new RegisterActivity.PutCustomer(customer));\r\n                                                      startActivity(toLogin);\r\n\r\n                                                  }\r\n                                              }\r\n                                          }\r\n        });\r\n    }\r\n\r\n    public boolean EmailValidation(String email){\r\n        if (email.isEmpty()) { //checks if email is empty                          //checks email\r\n            lbl_email.setText(\"Email *required field\");\r\n            lbl_email.setTextColor(Color.RED);\r\n            return false;\r\n        } else if (!isValidEmailNoAlert(email)) { //checks if email is valid        /\r\n            lbl_email.setText(\"Email * invalid email *\");\r\n            lbl_email.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_email.setText(\"Email\");\r\n            lbl_email.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean PasswordValidation(String password){\r\n        if (password.isEmpty()) { //checks if password is empty  `           //check password\r\n            lbl_password.setText(\"Password *required field *\");\r\n            lbl_password.setTextColor(Color.RED);\r\n            return false;\r\n        } else if (!isValidPassword(password)) { //checks if password is valid\r\n            lbl_password.setText(\"Password * invalid password *\");\r\n            lbl_password.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_password.setText(\"Password\");\r\n            lbl_password.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean FirstNameValidation(String firstName) {\r\n        if (firstName.isEmpty()) {                                           //check first name\r\n            lbl_firstName.setText(\"First Name *required field *\");\r\n            lbl_firstName.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_firstName.setText(\"First Name\");\r\n            lbl_firstName.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean LastNameValidation(String LastName) {   //String LastName\r\n        if (LastName.isEmpty()) {                                           //check first name\r\n            lbl_lastName.setText(\"Last Name *required field *\");\r\n            lbl_lastName.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_lastName.setText(\"Last Name\");\r\n            lbl_lastName.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    public boolean PhoneNumberValidation(String phone) {\r\n        if (phone.isEmpty()) {                                           //check phone number\r\n            lbl_phoneNumber.setText(\"Phone Number *required field *\");\r\n            lbl_phoneNumber.setTextColor(Color.RED);\r\n            return false;\r\n        } else {\r\n            lbl_phoneNumber.setText(\"Phone Number\");\r\n            lbl_phoneNumber.setTextColor(Color.BLACK);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    class PutCustomer implements Runnable {\r\n        private Customer customer;\r\n\r\n        public PutCustomer(Customer customer) {\r\n            this.customer = customer;\r\n        }\r\n\r\n        @Override\r\n        public void run() {\r\n            //send JSON data to REST service\r\n            String url = \"http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/\";\r\n            JSONObject obj = new JSONObject();\r\n            try {\r\n//                obj.put(\"custId\", customer.getCustId() + \"\");\r\n                obj.put(\"custFirstName\", customer.getCustFirstName()+ \"\");\r\n                obj.put(\"custLastName\", customer.getCustLastName() + \"\");\r\n                obj.put(\"custBusPhone\", customer.getCustBusPhone() + \"\");\r\n                obj.put(\"custEmail\", customer.getCustEmail() + \"\");\r\n                obj.put(\"Password\", customer.getPassword() + \"\"); // name is case sensitive\r\n            } catch (JSONException e) {\r\n                e.printStackTrace();\r\n            }\r\n            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, obj,\r\n                    new Response.Listener<JSONObject>() {\r\n                        @Override\r\n                        public void onResponse(final JSONObject response) {\r\n                            Log.d(\"crystal\", \"response=\" + response);\r\n                            VolleyLog.wtf(response.toString(), \"utf-8\");\r\n\r\n                            //display result message\r\n                            runOnUiThread(new Runnable() {\r\n                                @Override\r\n                                public void run() {\r\n                                    try {\r\n                                        Toast.makeText(getApplicationContext(), response.getString(\"message\"), Toast.LENGTH_LONG).show();\r\n                                    } catch (JSONException e) {\r\n                                        e.printStackTrace();\r\n                                    }\r\n                                }\r\n                            });\r\n                        }\r\n                    },\r\n                    new Response.ErrorListener() {\r\n                        @Override\r\n                        public void onErrorResponse(VolleyError error) {\r\n                            Log.d(\"harv\", \"error=\" + error);\r\n                            VolleyLog.wtf(error.getMessage(), \"utf-8\");\r\n                        }\r\n                    });\r\n\r\n            requestQueue.add(jsonObjectRequest);\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ app/src/main/java/org/ehsan/travelexpertsoosd/RegisterActivity.java	(date 1604031304523)
+@@ -198,15 +198,21 @@
+         @Override
+         public void run() {
+             //send JSON data to REST service
+-            String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/putcustomer/";
++            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/putcustomer/";
+             JSONObject obj = new JSONObject();
+             try {
+ //                obj.put("custId", customer.getCustId() + "");
+                 obj.put("custFirstName", customer.getCustFirstName()+ "");
+                 obj.put("custLastName", customer.getCustLastName() + "");
++                obj.put("custAddress", address + "");
++                obj.put("custCity", city + "");
++                obj.put("custProv", prov + "");
++                obj.put("custPostal", postal + "");
++                obj.put("custCountry", country + "");
++                obj.put("custHomePhone", homePhone + "");
+                 obj.put("custBusPhone", customer.getCustBusPhone() + "");
+                 obj.put("custEmail", customer.getCustEmail() + "");
+-                obj.put("Password", customer.getPassword() + ""); // name is case sensitive
++                obj.put("password", customer.getPassword() + ""); // name is case sensitive
+             } catch (JSONException e) {
+                 e.printStackTrace();
+             }
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM_[Default_Changelist]" date="1603567646610" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 2020-10-24 1:27 PM [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,85 +0,0 @@
+-Index: build.gradle
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nbuildscript {\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n    dependencies {\r\n        classpath \"com.android.tools.build:gradle:4.0.1\"\r\n\r\n        // NOTE: Do not place your application dependencies here; they belong\r\n        // in the individual module build.gradle files\r\n    }\r\n}\r\n\r\nallprojects {\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n}\r\n\r\ntask clean(type: Delete) {\r\n    delete rootProject.buildDir\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- build.gradle	(revision 2e6d37fdf05849403b0a9ba92c3825d1a4614eb9)
+-+++ build.gradle	(date 1603567646400)
+-@@ -5,7 +5,7 @@
+-         jcenter()
+-     }
+-     dependencies {
+--        classpath "com.android.tools.build:gradle:4.0.1"
+-+        classpath 'com.android.tools.build:gradle:4.1.0'
+- 
+-         // NOTE: Do not place your application dependencies here; they belong
+-         // in the individual module build.gradle files
+-Index: .idea/compiler.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/compiler.xml	(date 1603567646425)
+-+++ .idea/compiler.xml	(date 1603567646425)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="CompilerConfiguration">
+-+    <bytecodeTargetLevel target="1.8" />
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/misc.xml	(revision 2e6d37fdf05849403b0a9ba92c3825d1a4614eb9)
+-+++ .idea/misc.xml	(date 1603567646435)
+-@@ -1,6 +1,6 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+--  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-     <output url="file://$PROJECT_DIR$/build/classes" />
+-   </component>
+-   <component name="ProjectType">
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/gradle.xml	(revision 2e6d37fdf05849403b0a9ba92c3825d1a4614eb9)
+-+++ .idea/gradle.xml	(date 1603567646458)
+-@@ -14,6 +14,7 @@
+-           </set>
+-         </option>
+-         <option name="resolveModulePerSourceSet" value="false" />
+-+        <option name="useQualifiedModuleNames" value="true" />
+-       </GradleProjectSettings>
+-     </option>
+-   </component>
+-Index: gradle/wrapper/gradle-wrapper.properties
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>#Tue Oct 06 11:36:50 MDT 2020\r\ndistributionBase=GRADLE_USER_HOME\r\ndistributionPath=wrapper/dists\r\nzipStoreBase=GRADLE_USER_HOME\r\nzipStorePath=wrapper/dists\r\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-6.1.1-all.zip\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>windows-1252
+-===================================================================
+---- gradle/wrapper/gradle-wrapper.properties	(revision 2e6d37fdf05849403b0a9ba92c3825d1a4614eb9)
+-+++ gradle/wrapper/gradle-wrapper.properties	(date 1603567646468)
+-@@ -1,6 +1,6 @@
+--#Tue Oct 06 11:36:50 MDT 2020
+-+#Sat Oct 24 13:21:14 MDT 2020
+- distributionBase=GRADLE_USER_HOME
+- distributionPath=wrapper/dists
+- zipStoreBase=GRADLE_USER_HOME
+- zipStorePath=wrapper/dists
+--distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
+-+distributionUrl=https\://services.gradle.org/distributions/gradle-6.5-bin.zip
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM_[Default_Changelist]" date="1603662688647" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 2020-10-25 3:51 PM [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Checkout_at_2020-10-24_1_27_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,85 +0,0 @@
+-Index: build.gradle
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\r\nbuildscript {\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n    dependencies {\r\n        classpath \"com.android.tools.build:gradle:4.0.1\"\r\n\r\n        // NOTE: Do not place your application dependencies here; they belong\r\n        // in the individual module build.gradle files\r\n    }\r\n}\r\n\r\nallprojects {\r\n    repositories {\r\n        google()\r\n        jcenter()\r\n    }\r\n}\r\n\r\ntask clean(type: Delete) {\r\n    delete rootProject.buildDir\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- build.gradle	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
+-+++ build.gradle	(date 1603567274021)
+-@@ -5,7 +5,7 @@
+-         jcenter()
+-     }
+-     dependencies {
+--        classpath "com.android.tools.build:gradle:4.0.1"
+-+        classpath 'com.android.tools.build:gradle:4.1.0'
+- 
+-         // NOTE: Do not place your application dependencies here; they belong
+-         // in the individual module build.gradle files
+-Index: .idea/compiler.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/compiler.xml	(date 1603567230870)
+-+++ .idea/compiler.xml	(date 1603567230870)
+-@@ -0,0 +1,6 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="CompilerConfiguration">
+-+    <bytecodeTargetLevel target="1.8" />
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/misc.xml	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
+-+++ .idea/misc.xml	(date 1603567230855)
+-@@ -1,6 +1,6 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+--  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+-     <output url="file://$PROJECT_DIR$/build/classes" />
+-   </component>
+-   <component name="ProjectType">
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/gradle.xml	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
+-+++ .idea/gradle.xml	(date 1603567230897)
+-@@ -15,6 +15,7 @@
+-           </set>
+-         </option>
+-         <option name="resolveModulePerSourceSet" value="false" />
+-+        <option name="useQualifiedModuleNames" value="true" />
+-       </GradleProjectSettings>
+-     </option>
+-   </component>
+-Index: gradle/wrapper/gradle-wrapper.properties
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>#Tue Oct 06 11:36:50 MDT 2020\r\ndistributionBase=GRADLE_USER_HOME\r\ndistributionPath=wrapper/dists\r\nzipStoreBase=GRADLE_USER_HOME\r\nzipStorePath=wrapper/dists\r\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-6.1.1-all.zip\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>windows-1252
+-===================================================================
+---- gradle/wrapper/gradle-wrapper.properties	(revision 896b720da12074d6d1cd50405fe543ac6690e9c3)
+-+++ gradle/wrapper/gradle-wrapper.properties	(date 1603567274029)
+-@@ -1,6 +1,6 @@
+--#Tue Oct 06 11:36:50 MDT 2020
+-+#Sat Oct 24 13:21:14 MDT 2020
+- distributionBase=GRADLE_USER_HOME
+- distributionPath=wrapper/dists
+- zipStoreBase=GRADLE_USER_HOME
+- zipStorePath=wrapper/dists
+--distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
+-+distributionUrl=https\://services.gradle.org/distributions/gradle-6.5-bin.zip
+Index: .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM__Default_Changelist_.xml	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM_[Default_Changelist]" date="1603567717230" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_2020-10-24_1_28_PM_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Merge at 2020-10-24 1:28 PM [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_2020-10-25_3_51_PM_[Default_Changelist]/shelved.patch	(revision ee0ea1e98c139c320f594f01217e72b0e24895f5)
+@@ -1,40 +0,0 @@
+-Index: app/src/main/res/values/styles.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><resources>\r\n    <!-- Base application theme. -->\r\n    <style name=\"AppTheme\" parent=\"Theme.AppCompat.Light.DarkActionBar\">\r\n        <!-- Customize your theme here. -->\r\n        <item name=\"colorPrimary\">@color/colorPrimary</item>\r\n        <item name=\"colorPrimaryDark\">@color/colorPrimaryDark</item>\r\n        <item name=\"colorAccent\">@color/colorAccent</item>\r\n    </style>\r\n\r\n</resources>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/res/values/styles.xml	(revision eae8b2f55ad2a15d81ea842d76432ee589204280)
+-+++ app/src/main/res/values/styles.xml	(date 1603662552707)
+-@@ -2,9 +2,9 @@
+-     <!-- Base application theme. -->
+-     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+-         <!-- Customize your theme here. -->
+--        <item name="colorPrimary">@color/colorPrimary</item>
+--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+--        <item name="colorAccent">@color/colorAccent</item>
+-+        <item name="colorPrimary">#a4c2f4</item>
+-+        <item name="colorPrimaryDark">#354257</item>
+-+        <item name="colorAccent">#5fc0de</item>
+-     </style>
+- 
+- </resources>
+-\ No newline at end of file
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/gradle.xml	(revision eae8b2f55ad2a15d81ea842d76432ee589204280)
+-+++ .idea/gradle.xml	(date 1603662492222)
+-@@ -15,6 +15,7 @@
+-           </set>
+-         </option>
+-         <option name="resolveModulePerSourceSet" value="false" />
+-+        <option name="useQualifiedModuleNames" value="true" />
+-       </GradleProjectSettings>
+-     </option>
+-   </component>

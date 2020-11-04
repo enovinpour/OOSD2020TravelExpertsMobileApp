@@ -199,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void run() {
             //send JSON data to REST service
-            String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/putcustomer/";
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/putcustomer/";
             JSONObject obj = new JSONObject();
             try {
 //                obj.put("custId", customer.getCustId() + "");
@@ -214,7 +214,6 @@ public class RegisterActivity extends AppCompatActivity {
                 obj.put("custBusPhone", customer.getCustBusPhone() + "");
                 obj.put("custEmail", customer.getCustEmail() + "");
                 obj.put("password", customer.getPassword() + ""); // name is case sensitive
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

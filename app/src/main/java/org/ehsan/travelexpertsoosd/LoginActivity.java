@@ -36,14 +36,11 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Model.CreditCard;
 import Model.Customer;
 
 import static org.ehsan.travelexpertsoosd.Validator.isValidEmailNoAlert;
 import static org.ehsan.travelexpertsoosd.Validator.isValidPassword;
 
-
-/// AUTHOR : Crystal Champion ///
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 email = txt_email.getText().toString();
                 password = txt_password.getText().toString();
 
+                //
                 if (email.isEmpty()) { //checks if email is empty
                     lbl_email.setText("Email * required field *");
                     lbl_email.setTextColor(Color.RED);
@@ -96,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         lbl_password.setText("Password * invalid password *");
                         lbl_password.setTextColor(Color.RED);
                     } else {
-                        //else, email and password are valid, run getCustomer()
+                        //else, email and password are valid
                         Executors.newSingleThreadExecutor().execute(new getCustomer(email));
                     }
                 }
@@ -123,8 +121,9 @@ public class LoginActivity extends AppCompatActivity {
         public void run() {
             //retrieve JSON data from REST service into StringBuffer
             StringBuffer buffer = new StringBuffer();
-            String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/" + validEmail;  //for crystals testing
-            //String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/LoginEmail/" + validEmail; //For Ehsans Testing
+            //String url = "http:/192.168.0.17:8081/JSPDay4RESTJPAExample/rs/agent/getagent/" + packageId;
+            //String url = "http://192.168.133.1:8080/TravelExpertsOOSDJSP/rs/packagesalberta/LoginEmail/" + validEmail;
+            String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/LoginEmail/" + validEmail; //For Ehsans Testing
             Log.d("crystal", "Auth: " + url);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -151,6 +150,8 @@ public class LoginActivity extends AppCompatActivity {
                     } catch (JSONException e){
                         e.printStackTrace();
                     }
+                    //update ListView with the adapter of Agents
+//                    final JSONObject finalPkg = pkg;
                         final String customerEmail = emailfromUrl;
                         final String customerPassword = passwordfromUrl;
                         final int customerid = idfromUrl;

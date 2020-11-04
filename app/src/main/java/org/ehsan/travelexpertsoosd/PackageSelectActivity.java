@@ -115,8 +115,8 @@ private ArrayList loadData() {
 
         //preform the service calls to the webservice
         //String url = "http://192.168.0.23:8082/JSPDay4RESTJPAExample/rs/agent/getagentlist";
-       String url = "http://192.168.0.32:8080/TravelExpertsOOSDJSP2/rs/TEREST/getpackagelist";
-        //String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/agent/getpackagelist"; //For Ehsans Testing
+//        String url = "http://192.168.0.17:8081/TravelExpertsOOSDJSP2/rs/packagesalberta/getpackagelist";
+        String url = "http://192.168.0.12:8081/OOSDTravelExperts/rs/travel/getpackagelist"; //For Ehsans Testing
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
